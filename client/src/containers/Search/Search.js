@@ -34,11 +34,27 @@ class Search extends Component {
       'Reported Alt': { isFetch: 0, isHeader: 1 }
     },
     searchResults: [],
+    suggestions: [],
     error: {}
   };
 
   handleInputChange = event => {
     this.setState({ [event.target.name]: event.target.value });
+
+    if (!event.target.value) {
+      this.setState({ suggestions: [] });
+      return;
+    }
+
+    const suggestionEndpoint = 'http://localhost:5000/api/search/suggestion';
+    const data = { gene: event.target.value };
+
+    axios
+      .post(suggestionEndpoint, data)
+      .then(response =>
+        this.setState({ suggestions: response.data.suggestions })
+      )
+      .catch(error => this.setState({ error }));
   };
 
   handleSearch = event => {
@@ -98,6 +114,7 @@ class Search extends Component {
       <div className={styles.Search}>
         <SearchBar
           gene={this.state.gene}
+          suggestions={this.state.suggestions}
           handleInputChange={this.handleInputChange}
           handleSearch={this.handleSearch}
         />
