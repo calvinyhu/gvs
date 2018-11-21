@@ -35,6 +35,7 @@ class Search extends Component {
       'Reported Alt': { isFetch: 0, isHeader: 1, isSortable: 1 }
     },
     sortedHeader: { name: '', isAscending: false },
+    openGeneId: '',
     searchResults: [],
     suggestions: [],
     error: {}
@@ -115,6 +116,19 @@ class Search extends Component {
     };
   };
 
+  showVariantsHandlers = {};
+  getShowVariantsHandler = geneId => {
+    if (!this.showVariantsHandlers[geneId])
+      this.showVariantsHandlers[geneId] = () => this.handleShowVariants(geneId);
+    return this.showVariantsHandlers[geneId];
+  };
+
+  handleShowVariants = geneId => {
+    this.setState(prevState => {
+      return { openGeneId: prevState.openGeneId === geneId ? '' : geneId };
+    });
+  };
+
   renderSearchResults = () => {
     if (this.state.searchResults.length === 0) return [];
 
@@ -143,11 +157,14 @@ class Search extends Component {
           [styles.SortedHeader]: isSorted
         });
 
+        let onClick = null;
+        if (isSortable) onClick = this.getSortHandler(header[0]);
+
         searchResults.push(
           <div
             key={index}
             className={searchGridHeaderClasses}
-            onClick={isSortable ? this.getSortHandler(header[0]) : null}
+            onClick={onClick}
           >
             {header[0]}
             {isSorted ? arrow : null}
@@ -162,9 +179,54 @@ class Search extends Component {
         if (!this.state.headers[entry[0]]) return;
         if (!this.state.headers[entry[0]].isHeader) return;
 
+        let onClick = null;
+        const isNucleotideChange = entry[0] === 'Nucleotide Change';
+        if (isNucleotideChange)
+          onClick = this.getShowVariantsHandler(result._id);
+
+        const gridItemClasses = classnames({
+          [styles.SearchGridItem]: true,
+          [styles.NucleotideChange]: isNucleotideChange
+        });
+
+        const carrotClasses = classnames({
+          [styles.Carrot]: true,
+          [styles.Rotate90]: this.state.openGeneId === result._id
+        });
+        const carrot = (
+          <div className={carrotClasses}>
+            <div className="material-icons">chevron_right</div>
+          </div>
+        );
+
+        const entryName = (
+          <div className={styles.EntryName}>
+            {isNucleotideChange ? carrot : null}
+            <p>{entry[1] ? entry[1] : '-'}</p>
+          </div>
+        );
+
+        const variantClasses = classnames({
+          [styles.Variants]: true,
+          [styles.isOpen]: this.state.openGeneId === result._id
+        });
+        let variants = null;
+        if (isNucleotideChange) {
+          let otherMappings = result['Other Mappings'].split(',');
+          otherMappings = otherMappings.map((variant, index) => (
+            <p key={index}>{variant}</p>
+          ));
+          variants = <div className={variantClasses}>{otherMappings}</div>;
+        }
+
         searchResults.push(
-          <div key={index1 + ' ' + index2} className={styles.SearchGridItem}>
-            {entry[1] ? entry[1] : '-'}
+          <div
+            key={index1 + ' ' + index2}
+            className={gridItemClasses}
+            onClick={onClick}
+          >
+            {entryName}
+            {variants}
           </div>
         );
       });

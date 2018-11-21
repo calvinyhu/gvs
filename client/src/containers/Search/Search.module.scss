@@ -15,8 +15,10 @@
 
 .SearchGridHeader,
 .SearchGridItem {
-  padding: 0.25rem 0.5rem;
   white-space: nowrap;
+  p {
+    margin: 0.25rem;
+  }
 }
 
 .SearchGridHeader {
@@ -25,6 +27,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  padding: 0.25rem 0.5rem;
 }
 
 .SortableHeader {
@@ -48,4 +51,40 @@
 .Rotate {
   transform-origin: center;
   transform: rotate(180deg);
+}
+
+.NucleotideChange {
+  cursor: pointer;
+
+  &:hover {
+    background: lighten(#ccc, 10%);
+  }
+}
+
+.EntryName {
+  display: flex;
+  align-items: center;
+}
+
+.Variants {
+  transition: 0.3s;
+  display: none;
+  background: lighten(#ccc, 10%);
+
+  p {
+    margin-left: 1.75rem;
+  }
+}
+
+.isOpen {
+  display: block;
+}
+
+.Carrot {
+  display: flex;
+  transition: 0.3s;
+}
+
+.Rotate90 {
+  transform: rotate(90deg);
 }
