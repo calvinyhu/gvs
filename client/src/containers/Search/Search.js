@@ -31,11 +31,14 @@ class Search extends Component {
   handleSearch = event => {
     if (event) event.preventDefault();
 
-    // const url = '';
-    // axios
-    //   .get(url)
-    //   .then(response => this.setState({ searchResults: response.data }))
-    //   .catch(error => this.setState({ error }));
+    const searchEndpoint = 'http://localhost:5000/api/search';
+    const data = {
+      gene: this.state.gene
+    };
+    axios
+      .post(searchEndpoint, data)
+      .then(response => console.log(response))
+      .catch(error => console.log(error));
 
     const searchResults = dumbData.searchResults;
     this.setState({ searchResults });
