@@ -1,0 +1,24 @@
+.Search {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1rem;
+}
+
+.SearchGridContainer {
+  width: 100%;
+  overflow: auto;
+  margin: 1rem;
+}
+
+.SearchGridHeader,
+.SearchGridItem {
+  padding: 0.25rem 0.5rem;
+  white-space: nowrap;
+}
+
+.SearchGridHeader {
+  background: #ccc;
+}
