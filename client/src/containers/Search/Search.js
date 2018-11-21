@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import axios from 'axios';
+import classnames from 'classnames';
 
 import styles from './Search.module.scss';
 import SearchBar from '../../components/SearchBar/SearchBar';
@@ -9,30 +10,31 @@ class Search extends Component {
   state = {
     gene: '',
     headers: {
-      Gene: { isFetch: 1, isHeader: 1 },
-      'Nucleotide Change': { isFetch: 1, isHeader: 1 },
-      'Protein Change': { isFetch: 1, isHeader: 1 },
-      'Other Mappings': { isFetch: 1, isHeader: 0 },
-      Alias: { isFetch: 1, isHeader: 1 },
-      Transcripts: { isFetch: 0, isHeader: 1 },
-      Region: { isFetch: 1, isHeader: 1 },
-      'Reported Classification': { isFetch: 1, isHeader: 1 },
-      'Inferred Classification': { isFetch: 1, isHeader: 1 },
-      Source: { isFetch: 1, isHeader: 1 },
-      'Last Evaluated': { isFetch: 1, isHeader: 1 },
-      'Last Updated': { isFetch: 1, isHeader: 1 },
-      URL: { isFetch: 1, isHeader: 0 },
-      'Submitter Comment': { isFetch: 0, isHeader: 1 },
-      Assembly: { isFetch: 0, isHeader: 1 },
-      Chr: { isFetch: 0, isHeader: 1 },
-      'Genomic Start': { isFetch: 0, isHeader: 1 },
-      'Genomic Stop': { isFetch: 0, isHeader: 1 },
-      Ref: { isFetch: 0, isHeader: 1 },
-      Alt: { isFetch: 0, isHeader: 1 },
-      Accession: { isFetch: 0, isHeader: 1 },
-      'Reported Ref': { isFetch: 0, isHeader: 1 },
-      'Reported Alt': { isFetch: 0, isHeader: 1 }
+      Gene: { isFetch: 1, isHeader: 1, isSortable: 0 },
+      'Nucleotide Change': { isFetch: 1, isHeader: 1, isSortable: 1 },
+      'Protein Change': { isFetch: 1, isHeader: 1, isSortable: 1 },
+      'Other Mappings': { isFetch: 1, isHeader: 0, isSortable: 0 },
+      Alias: { isFetch: 1, isHeader: 1, isSortable: 1 },
+      Transcripts: { isFetch: 0, isHeader: 1, isSortable: 1 },
+      Region: { isFetch: 1, isHeader: 1, isSortable: 1 },
+      'Reported Classification': { isFetch: 1, isHeader: 1, isSortable: 1 },
+      'Inferred Classification': { isFetch: 1, isHeader: 1, isSortable: 1 },
+      Source: { isFetch: 1, isHeader: 1, isSortable: 1 },
+      'Last Evaluated': { isFetch: 1, isHeader: 1, isSortable: 1 },
+      'Last Updated': { isFetch: 1, isHeader: 1, isSortable: 1 },
+      URL: { isFetch: 1, isHeader: 0, isSortable: 1 },
+      'Submitter Comment': { isFetch: 0, isHeader: 1, isSortable: 1 },
+      Assembly: { isFetch: 0, isHeader: 1, isSortable: 1 },
+      Chr: { isFetch: 0, isHeader: 1, isSortable: 1 },
+      'Genomic Start': { isFetch: 0, isHeader: 1, isSortable: 1 },
+      'Genomic Stop': { isFetch: 0, isHeader: 1, isSortable: 1 },
+      Ref: { isFetch: 0, isHeader: 1, isSortable: 1 },
+      Alt: { isFetch: 0, isHeader: 1, isSortable: 1 },
+      Accession: { isFetch: 0, isHeader: 1, isSortable: 1 },
+      'Reported Ref': { isFetch: 0, isHeader: 1, isSortable: 1 },
+      'Reported Alt': { isFetch: 0, isHeader: 1, isSortable: 1 }
     },
+    sortedHeader: { name: '', isAscending: false },
     searchResults: [],
     suggestions: [],
     error: {}
@@ -61,6 +63,7 @@ class Search extends Component {
     if (event) event.preventDefault();
     if (!this.state.gene) return;
 
+    // Prep data
     const searchEndpoint = 'http://localhost:5000/api/search';
     const desiredHeaders = {};
     Object.entries(this.state.headers).forEach(entry => {
@@ -68,10 +71,48 @@ class Search extends Component {
     });
     const data = { gene: this.state.gene, desiredHeaders };
 
+    // Make request
     axios
       .post(searchEndpoint, data)
       .then(response => this.setState({ searchResults: response.data.genes }))
       .catch(error => this.setState({ error }));
+  };
+
+  sortHandlers = {};
+  getSortHandler = header => {
+    if (!this.sortHandlers[header])
+      this.sortHandlers[header] = () => this.handleSort(header);
+    return this.sortHandlers[header];
+  };
+
+  handleSort = header => {
+    const sortedHeader = {
+      name: header,
+      isAscending:
+        this.state.sortedHeader.name !== header ||
+        !this.state.sortedHeader.isAscending
+    };
+    const searchResults = [];
+    this.state.searchResults.forEach(result =>
+      searchResults.push({ ...result })
+    );
+    searchResults.sort(this.compare(sortedHeader));
+    this.setState({ searchResults, sortedHeader });
+  };
+
+  compare = sortedHeader => {
+    const header = sortedHeader.name;
+    return (a, b) => {
+      if (sortedHeader.isAscending) {
+        if (a[header] > b[header]) return 1;
+        if (a[header] < b[header]) return -1;
+        return 0;
+      } else {
+        if (a[header] > b[header]) return -1;
+        if (a[header] < b[header]) return 1;
+        return 0;
+      }
+    };
   };
 
   renderSearchResults = () => {
@@ -82,9 +123,34 @@ class Search extends Component {
     // Push Headers
     Object.entries(this.state.headers).forEach((header, index) => {
       if (header[1].isFetch && header[1].isHeader) {
+        const isSortable = this.state.headers[header[0]].isSortable;
+        const isSorted = this.state.sortedHeader.name === header[0];
+
+        const arrowClasses = classnames({
+          [styles.Arrow]: true,
+          [styles.Rotate]: isSorted && !this.state.sortedHeader.isAscending
+        });
+
+        const arrow = (
+          <div className={arrowClasses}>
+            <div className="material-icons">keyboard_arrow_up</div>
+          </div>
+        );
+
+        const searchGridHeaderClasses = classnames({
+          [styles.SearchGridHeader]: true,
+          [styles.SortableHeader]: isSortable,
+          [styles.SortedHeader]: isSorted
+        });
+
         searchResults.push(
-          <div key={index} className={styles.SearchGridHeader}>
+          <div
+            key={index}
+            className={searchGridHeaderClasses}
+            onClick={isSortable ? this.getSortHandler(header[0]) : null}
+          >
             {header[0]}
+            {isSorted ? arrow : null}
           </div>
         );
       }

@@ -20,5 +20,32 @@
 }
 
 .SearchGridHeader {
-  background: #ccc;
+  background: #78c0c0;
+  font-weight: bold;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.SortableHeader {
+  cursor: pointer;
+  transition: 0.3s;
+
+  &:hover {
+    background: darken(#78c0c0, 10%);
+  }
+}
+
+.SortedHeader {
+  background: darken(#78c0c0, 10%);
+}
+
+.Arrow {
+  display: flex;
+  margin-left: 1rem;
+}
+
+.Rotate {
+  transform-origin: center;
+  transform: rotate(180deg);
 }
