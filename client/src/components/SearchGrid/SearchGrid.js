@@ -17,7 +17,8 @@ const SearchGrid = props => {
 };
 
 SearchGrid.propTypes = {
-  numCols: PropTypes.number.isRequired
+  numCols: PropTypes.number.isRequired,
+  searchResults: PropTypes.array
 };
 
 export default SearchGrid;

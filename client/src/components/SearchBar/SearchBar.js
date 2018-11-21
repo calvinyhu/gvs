@@ -20,6 +20,8 @@ const SearchBar = props => {
 };
 
 SearchBar.propTypes = {
+  gene: PropTypes.string.isRequired,
+  handleInputChange: PropTypes.func.isRequired,
   handleSearch: PropTypes.func.isRequired
 };
 
