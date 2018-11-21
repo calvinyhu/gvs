@@ -30,8 +30,14 @@ class Search extends Component {
   handleSearch = event => {
     if (event) event.preventDefault();
 
+    if (!this.state.gene) return;
+
     const searchEndpoint = 'http://localhost:5000/api/search';
-    const data = { gene: this.state.gene };
+    const data = {
+      gene: this.state.gene,
+      desiredHeaders: this.state.headers.join(' ')
+    };
+    // TODO: Headers have spaces cant select fields because we are deliminiting by spaces
     axios
       .post(searchEndpoint, data)
       .then(response => this.setState({ searchResults: response.data.genes }))

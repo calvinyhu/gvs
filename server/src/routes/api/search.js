@@ -4,7 +4,7 @@ const router = express.Router();
 const Gene = require('../../models/Gene/Gene');
 
 router.post('/', (req, res) => {
-  Gene.find({ Gene: req.body.gene })
+  Gene.find({ Gene: req.body.gene }, req.body.desiredHeaders)
     .then(genes => {
       res.json({ genes });
     })
