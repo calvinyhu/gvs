@@ -4,7 +4,6 @@ import axios from 'axios';
 import styles from './Search.module.scss';
 import SearchBar from '../../components/SearchBar/SearchBar';
 import SearchGrid from '../../components/SearchGrid/SearchGrid';
-import dumbData from '../../assets/dumbData';
 
 class Search extends Component {
   state = {
@@ -18,7 +17,7 @@ class Search extends Component {
       'Reported Classification',
       'Last Evaluated',
       'Last Updated',
-      'More Info'
+      'URL'
     ],
     searchResults: [],
     error: {}
@@ -32,16 +31,11 @@ class Search extends Component {
     if (event) event.preventDefault();
 
     const searchEndpoint = 'http://localhost:5000/api/search';
-    const data = {
-      gene: this.state.gene
-    };
+    const data = { gene: this.state.gene };
     axios
       .post(searchEndpoint, data)
-      .then(response => console.log(response))
-      .catch(error => console.log(error));
-
-    const searchResults = dumbData.searchResults;
-    this.setState({ searchResults });
+      .then(response => this.setState({ searchResults: response.data.genes }))
+      .catch(error => this.setState({ error }));
   };
 
   renderSearchResults = () => {
@@ -58,12 +52,14 @@ class Search extends Component {
     });
 
     this.state.searchResults.forEach((result, index1) => {
-      Object.values(result).forEach((val, index2) => {
-        searchResults.push(
-          <div key={index1 + ' ' + index2} className={styles.SearchGridItem}>
-            {val}
-          </div>
-        );
+      Object.entries(result).forEach((entry, index2) => {
+        if (this.state.headers.includes(entry[0])) {
+          searchResults.push(
+            <div key={index1 + ' ' + index2} className={styles.SearchGridItem}>
+              {entry[1] ? entry[1] : '-'}
+            </div>
+          );
+        }
       });
     });
 

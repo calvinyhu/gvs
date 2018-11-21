@@ -1,21 +1,21 @@
 const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
-// const mongoose = require('mongoose');
+const mongoose = require('mongoose');
 const search = require('./routes/api/search');
 
 // Database Setup
-// mongoose
-//   .connect(
-//     'mongodb://localhost:gvs/gvs',
-//     { useNewUrlParser: true }
-//   )
-//   .then(() => {
-//     console.log('MongoDB connected.');
-//   })
-//   .catch(error => {
-//     console.log(error);
-//   });
+mongoose
+  .connect(
+    'mongodb://calvinyhu:calvinyhu1@ds249737.mlab.com:49737/gvs',
+    { useNewUrlParser: true }
+  )
+  .then(() => {
+    console.log('MongoDB connected.');
+  })
+  .catch(error => {
+    console.log(error);
+  });
 
 // App Setup
 const app = express();
