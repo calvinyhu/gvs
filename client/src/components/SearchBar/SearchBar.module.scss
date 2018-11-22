@@ -3,7 +3,7 @@
 
 .SearchBar {
   width: 100%;
-  max-width: $width * 25;
+  max-width: 30rem;
 
   form {
     display: flex;
@@ -31,7 +31,7 @@
     }
 
     .SearchButtonContainer {
-      width: 2.5rem;
+      width: 25%;
       min-width: 2.5rem;
       min-height: 2.5rem;
       margin-left: $margin;

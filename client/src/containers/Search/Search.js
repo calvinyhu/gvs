@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import axios from 'axios';
 
 import styles from './Search.module.scss';
-import SearchBar from '../../components/SearchBar/SearchBar';
+import ToolBar from '../../components/ToolBar/ToolBar';
 import SearchGrid from '../../components/SearchGrid/SearchGrid';
 import SearchGridHeader from '../../components/SearchGridHeader/SearchGridHeader';
 import SearchGridItem from '../../components/SearchGridItem/SearchGridItem';
@@ -126,15 +126,11 @@ class Search extends Component {
   compare = sortedHeader => {
     const header = sortedHeader.name;
     return (a, b) => {
-      if (sortedHeader.isAscending) {
-        if (a[header] > b[header]) return 1;
-        if (a[header] < b[header]) return -1;
-        return 0;
-      } else {
-        if (a[header] > b[header]) return -1;
-        if (a[header] < b[header]) return 1;
-        return 0;
-      }
+      const left = a[header] ? a[header] : '-';
+      const right = b[header] ? b[header] : '-';
+      if (left > right) return sortedHeader.isAscending ? 1 : -1;
+      if (left < right) return sortedHeader.isAscending ? -1 : 1;
+      return 0;
     };
   };
 
@@ -260,11 +256,12 @@ class Search extends Component {
 
     return (
       <div className={styles.Search}>
-        <SearchBar
+        <ToolBar
           gene={this.state.gene}
           suggestions={this.state.suggestions}
           handleInputChange={this.handleInputChange}
           handleSearch={this.handleSearch}
+          handleToggleDrawer={this.handleToggleDrawer}
         />
         <div className={styles.SearchGridContainer}>
           {this.state.isLoading ? (
@@ -279,11 +276,6 @@ class Search extends Component {
               searchResults={grid}
             />
           )}
-        </div>
-        <div className={styles.DrawerToggleContainer}>
-          <Button clear circle click={this.handleToggleDrawer}>
-            <div className="material-icons">menu</div>
-          </Button>
         </div>
         <Drawer left isOpen={this.state.isDrawerOpen}>
           <div className={styles.DrawerContents}>

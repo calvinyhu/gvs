@@ -1,0 +1,21 @@
+@import './src/assets/scss/_variables.scss';
+@import './src/assets/scss/_mixins.scss';
+
+.ToolBar {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+.DrawerToggleContainer {
+  min-width: 2.5rem;
+  height: 2.5rem;
+  margin-right: $margin;
+}
+
+.SearchBarContainer {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
