@@ -38,6 +38,7 @@ const toolBar = props => {
 };
 
 toolBar.propTypes = {
+  isCondensed: PropTypes.bool.isRequired,
   gene: PropTypes.string.isRequired,
   suggestions: PropTypes.array.isRequired,
   handleInputChange: PropTypes.func.isRequired,

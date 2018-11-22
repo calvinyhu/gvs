@@ -32,7 +32,12 @@ const SearchBar = props => {
         />
         <datalist id="suggestions">{options}</datalist>
         <div className={styles.SearchButtonContainer}>
-          <Button main name="search" click={props.handleSearch}>
+          <Button
+            disabled={!props.gene}
+            main
+            name="search"
+            click={props.handleSearch}
+          >
             <div className="material-icons">search</div>
           </Button>
         </div>

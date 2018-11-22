@@ -15,9 +15,10 @@ class Search extends Component {
     isLoading: false,
     isDrawerOpen: false,
     isSelectAll: false,
-    isCondensed: false,
+    isCondensed: true,
     gene: '',
     headers: geneHeaders,
+    numCols: 0,
     desiredHeaders: {},
     sortedHeader: { name: '', isAscending: false },
     openGeneId: '',
@@ -30,44 +31,56 @@ class Search extends Component {
     if (!event) return;
     const targetName = event.target.name;
     const targetVal = event.target.value;
+    if (targetName === 'gene')
+      this.handleGeneInputChange(targetName, targetVal);
+    else if (this.state.headers[targetName])
+      this.handleHeaderCheckboxChange(targetName);
+    else if (targetName === 'Select All') this.handleSelectAllChange();
+    else if (targetName === 'isCondensed') this.handleCondensedChange();
+  };
 
-    if (targetName === 'gene') {
-      this.setState({ [targetName]: targetVal });
-      if (!targetVal) {
-        this.setState({ suggestions: [] });
-        return;
-      }
-      const suggestionEndpoint = 'http://localhost:5000/api/search/suggestion';
-      const data = { gene: targetVal };
-      axios
-        .post(suggestionEndpoint, data)
-        .then(response =>
-          this.setState({ suggestions: response.data.suggestions })
-        )
-        .catch(error => this.setState({ error }));
-    } else if (this.state.headers[targetName]) {
-      const headers = {};
-      Object.keys(this.state.headers).forEach(key => {
-        headers[key] = { ...this.state.headers[key] };
-      });
-      headers[targetName].isChecked = !this.state.headers[targetName].isChecked;
-      if (targetName === 'Source')
-        headers.URL.isChecked = !this.state.headers[targetName].isChecked;
-      if (targetName === 'Nucleotide Change')
-        headers['Other Mappings'].isChecked = !this.state.headers[targetName]
-          .isChecked;
-      this.setState({ headers });
-    } else if (targetName === 'Select All') {
-      const checkedOrNot = this.state.isSelectAll ? 0 : 1;
-      const headers = {};
-      Object.keys(this.state.headers).forEach(key => {
-        headers[key] = { ...this.state.headers[key], isChecked: checkedOrNot };
-      });
-      this.setState({ isSelectAll: Boolean(checkedOrNot), headers });
-    } else if (targetName === 'isCondensed') {
-      const isCondensed = this.state.isCondensed;
-      this.setState({ [targetName]: !isCondensed });
+  handleGeneInputChange = (targetName, targetVal) => {
+    this.setState({ [targetName]: targetVal });
+    if (!targetVal) {
+      this.setState({ suggestions: [] });
+      return;
     }
+    const suggestionEndpoint = 'http://localhost:5000/api/search/suggestion';
+    const data = { gene: targetVal };
+    axios
+      .post(suggestionEndpoint, data)
+      .then(response =>
+        this.setState({ suggestions: response.data.suggestions })
+      )
+      .catch(error => this.setState({ error }));
+  };
+
+  handleHeaderCheckboxChange = targetName => {
+    const headers = {};
+    Object.keys(this.state.headers).forEach(key => {
+      headers[key] = { ...this.state.headers[key] };
+    });
+    const isChecked = !this.state.headers[targetName].isChecked;
+    headers[targetName].isChecked = isChecked;
+    if (targetName === 'Source') headers.URL.isChecked = isChecked;
+    if (targetName === 'Nucleotide Change')
+      headers['Other Mappings'].isChecked = isChecked;
+    this.setState({ headers });
+  };
+
+  handleSelectAllChange = () => {
+    const isChecked = this.state.isSelectAll ? 0 : 1;
+    const headers = {};
+    Object.keys(this.state.headers).forEach(key => {
+      headers[key] = { ...this.state.headers[key], isChecked };
+    });
+    this.setState({ isSelectAll: Boolean(isChecked), headers });
+  };
+
+  handleCondensedChange = () => {
+    this.setState(prevState => {
+      return { isCondensed: !prevState.isCondensed };
+    });
   };
 
   handleSearch = event => {
@@ -75,7 +88,6 @@ class Search extends Component {
     if (!this.state.gene) return;
 
     // Prep data
-    const searchEndpoint = 'http://localhost:5000/api/search';
     const headers = {};
     Object.keys(this.state.headers).forEach(key => {
       headers[key] = { ...this.state.headers[key] };
@@ -87,10 +99,14 @@ class Search extends Component {
         desiredHeaders[entry[0]] = 1;
       } else headers[entry[0]].isFetched = 0;
     });
-    const data = { gene: this.state.gene, desiredHeaders };
+    const numCols = Object.values(headers).filter(
+      header => header.isFetched && header.isHeader
+    ).length;
+    this.setState({ isLoading: true, headers, desiredHeaders, numCols });
 
-    // Make request
-    this.setState({ isLoading: true, headers, desiredHeaders });
+    // Make Request
+    const searchEndpoint = 'http://localhost:5000/api/search';
+    const data = { gene: this.state.gene, desiredHeaders };
     axios
       .post(searchEndpoint, data)
       .then(response =>
@@ -189,7 +205,7 @@ class Search extends Component {
           ? this.getShowVariantsHandler(result._id)
           : null;
 
-        // Push the same number of items per row as there are number of  headers
+        // Push the same number of items per row as there are number of headers
         grid.push(
           <SearchGridItem
             key={index1 + ' ' + index2}
@@ -223,7 +239,6 @@ class Search extends Component {
     );
     Object.keys(this.state.headers).forEach((key, index) => {
       if (!this.state.headers[key].isHeader) return;
-
       checkboxes.push(
         <label key={index}>
           <input
@@ -250,7 +265,7 @@ class Search extends Component {
   render() {
     let loader = null;
     let headerCheckboxes = this.renderHeaderCheckboxes();
-    let grid = null;
+    let grid = [];
     if (this.state.isLoading) {
       loader = (
         <div className={styles.LoaderContainer}>
@@ -262,6 +277,7 @@ class Search extends Component {
     return (
       <div className={styles.Search}>
         <ToolBar
+          isCondensed={this.state.isCondensed}
           gene={this.state.gene}
           suggestions={this.state.suggestions}
           handleInputChange={this.handleInputChange}
@@ -269,18 +285,8 @@ class Search extends Component {
           handleToggleDrawer={this.handleToggleDrawer}
         />
         <div className={styles.SearchGridContainer}>
-          {this.state.isLoading ? (
-            loader
-          ) : (
-            <SearchGrid
-              numCols={
-                Object.values(this.state.headers).filter(
-                  header => header.isFetched && header.isHeader
-                ).length
-              }
-              searchResults={grid}
-            />
-          )}
+          {loader}
+          <SearchGrid numCols={this.state.numCols} searchResults={grid} />
         </div>
         <Drawer left isOpen={this.state.isDrawerOpen}>
           <div className={styles.DrawerContents}>
