@@ -178,37 +178,31 @@ class Search extends Component {
   };
 
   renderSearchResults = grid => {
-    const numCols = Object.values(this.state.headers).filter(
-      header => header.isFetched && header.isHeader
-    ).length;
-
     this.state.searchResults.forEach((result, index1) => {
-      let colsPushed = 0;
-      Object.entries(result).forEach((entry, index2) => {
-        if (!this.state.headers[entry[0]]) return;
-        if (!this.state.headers[entry[0]].isHeader) return;
+      Object.keys(this.state.desiredHeaders).forEach((key, index2) => {
+        // Skip these since they are not headers and are part of other fields
+        if (!this.state.headers[key].isHeader) return;
 
-        let click = null;
-        const isNucleotideChange = entry[0] === 'Nucleotide Change';
-        if (isNucleotideChange) click = this.getShowVariantsHandler(result._id);
+        const isNucleotideChange = key === 'Nucleotide Change';
+        const isSource = key === 'Source';
+        let click = isNucleotideChange
+          ? this.getShowVariantsHandler(result._id)
+          : null;
 
+        // Push the same number of items per row as there are number of  headers
         grid.push(
           <SearchGridItem
             key={index1 + ' ' + index2}
             isDarkRow={index1 % 2 === 0}
-            isNucleotideChange={isNucleotideChange}
-            isSource={entry[0] === 'Source'}
-            openGeneId={this.state.openGeneId}
-            entryValue={String(entry[1])}
-            result={result}
-            click={click}
+            isNucleotideChange={result[key] ? isNucleotideChange : false}
+            isSource={result[key] ? isSource : false}
+            openGeneId={result[key] ? this.state.openGeneId : ''}
+            entryValue={result[key] ? String(result[key]) : ''}
+            result={result[key] ? result : {}}
+            click={result[key] ? click : null}
           />
         );
-        colsPushed++;
       });
-      if (colsPushed !== numCols - 1) {
-        console.log(colsPushed, numCols);
-      }
     });
   };
 

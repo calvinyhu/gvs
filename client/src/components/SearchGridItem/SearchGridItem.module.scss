@@ -3,7 +3,10 @@
 $light-gray: lighten(#ccc, 10%);
 
 .SearchGridItem {
+  display: flex;
+  align-items: center;
   white-space: nowrap;
+
   p {
     margin: $margin / 4;
   }
