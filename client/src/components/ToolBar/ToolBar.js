@@ -25,6 +25,12 @@ const ToolBar = props => {
   );
 };
 
-ToolBar.propTypes = {};
+ToolBar.propTypes = {
+  gene: PropTypes.string.isRequired,
+  suggestions: PropTypes.array.isRequired,
+  handleInputChange: PropTypes.func.isRequired,
+  handleSearch: PropTypes.func.isRequired,
+  handleToggleDrawer: PropTypes.func.isRequired
+};
 
 export default ToolBar;
