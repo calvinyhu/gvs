@@ -22,7 +22,7 @@ router.post('/suggestion', (req, res) => {
     sort: { Gene: 1 }
   })
     .then(suggestions => {
-      res.json({ suggestions });
+      res.json({ suggestions, gene: req.body.gene });
     })
     .catch(error => {
       res.status(400).json({ error });

@@ -19,17 +19,29 @@ const SearchBar = props => {
     ));
   }
 
+  let loader = null;
+  if (props.isLoadingSuggestions) {
+    loader = (
+      <div className={styles.LoaderContainer}>
+        <div className={styles.Loader} />
+      </div>
+    );
+  }
+
   return (
     <div className={styles.SearchBar}>
       <form onSubmit={props.handleSearch}>
-        <input
-          type="text"
-          name="gene"
-          placeholder="Gene Name"
-          value={props.gene}
-          list="suggestions"
-          onChange={props.handleInputChange}
-        />
+        <div className={styles.InputContainer}>
+          <input
+            type="text"
+            name="gene"
+            placeholder="Gene Name"
+            value={props.gene}
+            list="suggestions"
+            onChange={props.handleInputChange}
+          />
+          {loader}
+        </div>
         <datalist id="suggestions">{options}</datalist>
         <div className={styles.SearchButtonContainer}>
           <Button
@@ -47,6 +59,7 @@ const SearchBar = props => {
 };
 
 SearchBar.propTypes = {
+  isLoadingSuggestions: PropTypes.bool.isRequired,
   gene: PropTypes.string.isRequired,
   suggestions: PropTypes.array.isRequired,
   handleInputChange: PropTypes.func.isRequired,

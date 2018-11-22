@@ -1,40 +1,66 @@
 @import './src/assets/scss/_variables.scss';
 @import './src/assets/scss/_mixins.scss';
+@import './src/assets/scss/_classes.scss';
 
 .SearchBar {
   width: 100%;
   max-width: 30rem;
+  position: relative;
 
   form {
     display: flex;
     width: 100%;
+  }
+}
 
-    input {
-      width: 100%;
-      appearance: none;
-      background: $md-white;
-      color: $md-black;
-      border: $border-input;
-      border-radius: $border-radius-input;
-      padding: $padding / 2 $padding / 1.5;
-      transition: $transition-duration1;
+.InputContainer {
+  position: relative;
+  width: 100%;
 
-      &:hover {
-        box-shadow: $box-shadow;
-      }
+  input {
+    width: 100%;
+    appearance: none;
+    background: $md-white;
+    color: $md-black;
+    border: $border-input;
+    border-radius: $border-radius-input;
+    padding: $padding / 2 $padding / 1.5;
+    transition: $transition-duration1;
+    position: relative;
 
-      &:focus {
-        outline: none;
-        border-color: $main-theme;
-        box-shadow: $box-shadow;
-      }
+    &:hover {
+      box-shadow: $box-shadow;
     }
 
-    .SearchButtonContainer {
-      width: 25%;
-      min-width: 2.5rem;
-      min-height: 2.5rem;
-      margin-left: $margin;
+    &:focus {
+      outline: none;
+      border-color: $main-theme;
+      box-shadow: $box-shadow;
     }
   }
+}
+
+.LoaderContainer {
+  position: absolute;
+  top: 50%;
+  right: 2rem;
+  z-index: 1;
+  transform: translate(-50%, -50%);
+  width: 1.4rem;
+  height: 1.4rem;
+  overflow: hidden;
+
+  .Loader {
+    border-top: 0.3rem solid $lighter-main-theme;
+    border-right: 0.3rem solid $lighter-main-theme;
+    border-bottom: 0.3rem solid $lighter-main-theme;
+    border-left: 0.3rem solid $darker-main-theme;
+  }
+}
+
+.SearchButtonContainer {
+  width: 25%;
+  min-width: 2.5rem;
+  min-height: 2.5rem;
+  margin-left: $margin;
 }

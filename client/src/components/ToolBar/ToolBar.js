@@ -15,6 +15,7 @@ const toolBar = props => {
       </div>
       <div className={styles.SearchBarContainer}>
         <SearchBar
+          isLoadingSuggestions={props.isLoadingSuggestions}
           gene={props.gene}
           suggestions={props.suggestions}
           handleInputChange={props.handleInputChange}
@@ -38,6 +39,7 @@ const toolBar = props => {
 };
 
 toolBar.propTypes = {
+  isLoadingSuggestions: PropTypes.bool.isRequired,
   isCondensed: PropTypes.bool.isRequired,
   gene: PropTypes.string.isRequired,
   suggestions: PropTypes.array.isRequired,

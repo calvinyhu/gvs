@@ -13,6 +13,7 @@ import geneHeaders from '../../database/geneHeaders';
 class Search extends Component {
   state = {
     isLoading: false,
+    isLoadingSuggestions: false,
     isDrawerOpen: false,
     isSelectAll: false,
     isCondensed: true,
@@ -42,17 +43,22 @@ class Search extends Component {
   handleGeneInputChange = (targetName, targetVal) => {
     this.setState({ [targetName]: targetVal });
     if (!targetVal) {
-      this.setState({ suggestions: [] });
+      this.setState({ suggestions: [], isLoadingSuggestions: false });
       return;
     }
+    this.setState({ isLoadingSuggestions: true });
     const suggestionEndpoint = 'http://localhost:5000/api/search/suggestion';
     const data = { gene: targetVal };
     axios
       .post(suggestionEndpoint, data)
-      .then(response =>
-        this.setState({ suggestions: response.data.suggestions })
-      )
-      .catch(error => this.setState({ error }));
+      .then(response => {
+        if (response.data.gene !== this.state.gene) return;
+        this.setState({
+          suggestions: response.data.suggestions,
+          isLoadingSuggestions: false
+        });
+      })
+      .catch(error => this.setState({ error, isLoadingSuggestions: false }));
   };
 
   handleHeaderCheckboxChange = targetName => {
@@ -277,6 +283,7 @@ class Search extends Component {
     return (
       <div className={styles.Search}>
         <ToolBar
+          isLoadingSuggestions={this.state.isLoadingSuggestions}
           isCondensed={this.state.isCondensed}
           gene={this.state.gene}
           suggestions={this.state.suggestions}
