@@ -184,8 +184,19 @@ class Search extends Component {
         if (isNucleotideChange)
           onClick = this.getShowVariantsHandler(result._id);
 
+        const isSource = entry[0] === 'Source';
+        let sourceLink = null;
+        if (isSource) {
+          sourceLink = (
+            <a href={result.URL} target="_blank" rel="noopener noreferrer">
+              {entry[1] ? entry[1] : '-'}
+            </a>
+          );
+        }
+
         const gridItemClasses = classnames({
           [styles.SearchGridItem]: true,
+          [styles.DarkRow]: index1 % 2 === 0,
           [styles.NucleotideChange]: isNucleotideChange
         });
 
@@ -202,7 +213,7 @@ class Search extends Component {
         const entryName = (
           <div className={styles.EntryName}>
             {isNucleotideChange ? carrot : null}
-            <p>{entry[1] ? entry[1] : '-'}</p>
+            {isSource ? sourceLink : <p>{entry[1] ? entry[1] : '-'}</p>}
           </div>
         );
 

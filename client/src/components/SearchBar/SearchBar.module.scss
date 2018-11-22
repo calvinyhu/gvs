@@ -1,15 +1,38 @@
+@import '../../assets/scss/_variables.scss';
+@import '../../assets/scss/_mixins.scss';
+
 .SearchBar {
-  width: 50%;
+  width: 100%;
+  max-width: $width * 25;
 
   form {
+    display: flex;
     width: 100%;
 
     input {
       width: 100%;
+      appearance: none;
+      border: $border-input;
+      border-radius: $border-radius-input;
+      padding: $padding / 2 $padding / 1.5;
     }
 
     button {
+      cursor: pointer;
+      appearance: none;
+      background: $main-theme;
+      color: $md-black;
+      border: none;
+      border-radius: $border-radius-button;
       width: 100%;
+      max-width: $width * 5;
+      margin-left: $margin;
+      transition: $transition-duration1;
+      font-weight: bold;
+
+      &:hover {
+        background: $dark-main-theme;
+      }
     }
   }
 }

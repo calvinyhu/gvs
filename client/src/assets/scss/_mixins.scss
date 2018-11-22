@@ -1,0 +1,22 @@
+@mixin media-min-width($width) {
+  @media (min-width: $width) {
+    @content;
+  }
+}
+
+@mixin media-min-height($height) {
+  @media (min-height: $height) {
+    @content;
+  }
+}
+
+@mixin loading {
+  @keyframes loading {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+}
