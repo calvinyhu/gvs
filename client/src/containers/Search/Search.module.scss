@@ -5,6 +5,7 @@
   width: 100%;
   height: 100vh;
   display: flex;
+  position: relative;
   flex-direction: column;
   align-items: center;
   padding: $padding;
@@ -25,4 +26,97 @@
   overflow: hidden;
   justify-self: center;
   align-self: center;
+}
+
+.DrawerContents {
+  display: flex;
+  flex-direction: column;
+  background: $md-white;
+  position: relative;
+  padding: $padding;
+  height: 100%;
+}
+
+.DrawerHeader {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  margin-bottom: $margin;
+
+  .DrawerCloseContainer {
+    width: 2.5rem;
+    height: 2.5rem;
+  }
+
+  h4 {
+    margin: 0;
+    margin-left: $margin;
+  }
+}
+
+.HeaderCheckboxes {
+  width: auto;
+  display: flex;
+  flex-flow: column;
+  overflow: auto;
+
+  label {
+    display: flex;
+    margin-bottom: $margin / 2;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+
+  label input {
+    appearance: none;
+    cursor: pointer;
+  }
+
+  span {
+    min-height: 1.5rem;
+    height: 1.5rem;
+    min-width: 1.5rem;
+    width: 1.5rem;
+    background-color: #eee;
+    margin-right: $margin / 1.5;
+  }
+
+  /* On mouse-over, add a grey background color */
+  label:hover input ~ span {
+    background-color: #ccc;
+  }
+
+  /* When the checkbox is checked, add a blue background */
+  label input:checked ~ span {
+    background-color: $main-theme;
+  }
+
+  /* Create thespan/indicator (hidden when not checked) */
+  span:after {
+    content: '';
+    position: absolute;
+    display: none;
+  }
+
+  /* Show thespan when checked */
+  label input:checked ~ span:after {
+    display: block;
+  }
+
+  /* Style thespan/indicator */
+  label span:after {
+    width: 7px;
+    height: 13px;
+    border: solid $md-white;
+    border-width: 0 3px 3px 0;
+    transform: translate(120%, 30%) rotate(45deg);
+  }
+}
+
+.DrawerToggleContainer {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  width: 2.5rem;
+  height: 2.5rem;
 }

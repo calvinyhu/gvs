@@ -1,0 +1,34 @@
+@import './src/assets/scss/_variables.scss';
+@import './src/assets/scss/_mixins.scss';
+
+.LeftDrawer,
+.RightDrawer {
+  height: 100%;
+  width: auto;
+  position: fixed;
+  top: 0;
+  z-index: 2;
+  transition: $transition1;
+  overflow: auto;
+  box-shadow: $box-shadow-left;
+}
+
+.LeftDrawer {
+  left: 0;
+}
+
+.RightDrawer {
+  right: 0;
+}
+
+.OpenDrawer {
+  transform: translateX(0);
+}
+
+.CloseLeftDrawer {
+  transform: translateX(-100%);
+}
+
+.CloseRightDrawer {
+  transform: translateX(100%);
+}

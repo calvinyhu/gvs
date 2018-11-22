@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import styles from './SearchBar.module.scss';
+import Button from '../UI/Button/Button';
 
 const SearchBar = props => {
   const suggestions = {};
@@ -30,9 +31,11 @@ const SearchBar = props => {
           onChange={props.handleInputChange}
         />
         <datalist id="suggestions">{options}</datalist>
-        <button name="search" onClick={props.handleSearch}>
-          Search
-        </button>
+        <div className={styles.SearchButtonContainer}>
+          <Button main name="search" click={props.handleSearch}>
+            <div className="material-icons">search</div>
+          </Button>
+        </div>
       </form>
     </div>
   );

@@ -22,10 +22,13 @@ const SearchGridItem = props => {
       [styles.Variants]: true,
       [styles.isOpen]: props.openGeneId === props.result._id
     });
-    let otherMappings = props.result['Other Mappings'].split(',');
-    otherMappings = otherMappings.map((variant, index) => (
-      <p key={index}>{variant}</p>
-    ));
+    let otherMappings = [];
+    if (props.result) {
+      otherMappings = props.result['Other Mappings'].split(',');
+      otherMappings = otherMappings.map((variant, index) => (
+        <p key={index}>{variant}</p>
+      ));
+    }
     variants = <div className={variantClasses}>{otherMappings}</div>;
   }
 

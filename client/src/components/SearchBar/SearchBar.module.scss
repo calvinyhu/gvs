@@ -30,23 +30,11 @@
       }
     }
 
-    button {
-      cursor: pointer;
-      appearance: none;
-      background: $main-theme;
-      color: $md-black;
-      border: none;
-      border-radius: $border-radius-button;
-      width: 100%;
-      max-width: $width * 5;
+    .SearchButtonContainer {
+      width: 2.5rem;
+      min-width: 2.5rem;
+      min-height: 2.5rem;
       margin-left: $margin;
-      transition: $transition-duration1;
-      font-weight: bold;
-      box-shadow: $box-shadow;
-
-      &:hover {
-        background: $dark-main-theme;
-      }
     }
   }
 }

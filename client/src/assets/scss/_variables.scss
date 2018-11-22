@@ -16,13 +16,21 @@ $margin: 1rem;
 // Width
 $width: 1rem;
 
+// Fab
+$fab-size: 3.5rem;
+$fab-size-mini: 2.5rem;
+
+// Transitions
+$timing-func-1: cubic-bezier(0.26, 0.94, 0.58, 1);
+$timing-func-2: cubic-bezier(0.4, 0, 0.2, 1);
 $transition-duration1: 0.3s;
 $transition-duration2: 0.2s;
+$transition1: $transition-duration1 $timing-func-1;
 
 // Box Shadow
-$box-shadow-top: 0px -3px 6px -2px rgba(0, 0, 0, 0.2);
-$box-shadow-bottom: 0px 3px 6px -2px rgba(0, 0, 0, 0.2);
 $box-shadow: 0px 3px 6px -2px rgba(0, 0, 0, 0.2);
+$box-shadow-top: 0px -3px 6px -2px rgba(0, 0, 0, 0.2);
+$box-shadow-left: 3px 0px 6px -2px rgba(0, 0, 0, 0.2);
 $box-shadow-card: 0px 3px 20px 0px rgba(0, 0, 0, 0.5);
 
 // Colors

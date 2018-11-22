@@ -6,36 +6,18 @@ import SearchBar from '../../components/SearchBar/SearchBar';
 import SearchGrid from '../../components/SearchGrid/SearchGrid';
 import SearchGridHeader from '../../components/SearchGridHeader/SearchGridHeader';
 import SearchGridItem from '../../components/SearchGridItem/SearchGridItem';
+import Drawer from '../../components/UI/Drawer/Drawer';
+import Button from '../../components/UI/Button/Button';
+import geneHeaders from '../../database/geneHeaders';
 
 class Search extends Component {
   state = {
     isLoading: false,
+    isDrawerOpen: false,
+    isSelectAll: false,
     gene: '',
-    headers: {
-      Gene: { isFetch: 1, isHeader: 1, isSortable: 0 },
-      'Nucleotide Change': { isFetch: 1, isHeader: 1, isSortable: 1 },
-      'Protein Change': { isFetch: 1, isHeader: 1, isSortable: 1 },
-      'Other Mappings': { isFetch: 1, isHeader: 0, isSortable: 0 },
-      Alias: { isFetch: 1, isHeader: 1, isSortable: 1 },
-      Transcripts: { isFetch: 0, isHeader: 1, isSortable: 1 },
-      Region: { isFetch: 1, isHeader: 1, isSortable: 1 },
-      'Reported Classification': { isFetch: 1, isHeader: 1, isSortable: 1 },
-      'Inferred Classification': { isFetch: 1, isHeader: 1, isSortable: 1 },
-      Source: { isFetch: 1, isHeader: 1, isSortable: 1 },
-      'Last Evaluated': { isFetch: 1, isHeader: 1, isSortable: 1 },
-      'Last Updated': { isFetch: 1, isHeader: 1, isSortable: 1 },
-      URL: { isFetch: 1, isHeader: 0, isSortable: 1 },
-      'Submitter Comment': { isFetch: 0, isHeader: 1, isSortable: 1 },
-      Assembly: { isFetch: 0, isHeader: 1, isSortable: 1 },
-      Chr: { isFetch: 0, isHeader: 1, isSortable: 1 },
-      'Genomic Start': { isFetch: 0, isHeader: 1, isSortable: 1 },
-      'Genomic Stop': { isFetch: 0, isHeader: 1, isSortable: 1 },
-      Ref: { isFetch: 0, isHeader: 1, isSortable: 1 },
-      Alt: { isFetch: 0, isHeader: 1, isSortable: 1 },
-      Accession: { isFetch: 0, isHeader: 1, isSortable: 1 },
-      'Reported Ref': { isFetch: 0, isHeader: 1, isSortable: 1 },
-      'Reported Alt': { isFetch: 0, isHeader: 1, isSortable: 1 }
-    },
+    headers: geneHeaders,
+    desiredHeaders: {},
     sortedHeader: { name: '', isAscending: false },
     openGeneId: '',
     searchResults: [],
@@ -44,22 +26,44 @@ class Search extends Component {
   };
 
   handleInputChange = event => {
-    this.setState({ [event.target.name]: event.target.value });
+    if (!event) return;
+    const targetName = event.target.name;
+    const targetVal = event.target.value;
 
-    if (!event.target.value) {
-      this.setState({ suggestions: [] });
-      return;
+    if (targetName === 'gene') {
+      this.setState({ [targetName]: targetVal });
+      if (!targetVal) {
+        this.setState({ suggestions: [] });
+        return;
+      }
+      const suggestionEndpoint = 'http://localhost:5000/api/search/suggestion';
+      const data = { gene: targetVal };
+      axios
+        .post(suggestionEndpoint, data)
+        .then(response =>
+          this.setState({ suggestions: response.data.suggestions })
+        )
+        .catch(error => this.setState({ error }));
+    } else if (this.state.headers[targetName]) {
+      const headers = {};
+      Object.keys(this.state.headers).forEach(key => {
+        headers[key] = { ...this.state.headers[key] };
+      });
+      headers[targetName].isChecked = !this.state.headers[targetName].isChecked;
+      if (targetName === 'Source')
+        headers.URL.isChecked = !this.state.headers[targetName].isChecked;
+      if (targetName === 'Nucleotide Change')
+        headers['Other Mappings'].isChecked = !this.state.headers[targetName]
+          .isChecked;
+      this.setState({ headers });
+    } else if (targetName === 'Select All') {
+      const checkedOrNot = this.state.isSelectAll ? 0 : 1;
+      const headers = {};
+      Object.keys(this.state.headers).forEach(key => {
+        headers[key] = { ...this.state.headers[key], isChecked: checkedOrNot };
+      });
+      this.setState({ isSelectAll: Boolean(checkedOrNot), headers });
     }
-
-    const suggestionEndpoint = 'http://localhost:5000/api/search/suggestion';
-    const data = { gene: event.target.value };
-
-    axios
-      .post(suggestionEndpoint, data)
-      .then(response =>
-        this.setState({ suggestions: response.data.suggestions })
-      )
-      .catch(error => this.setState({ error }));
   };
 
   handleSearch = event => {
@@ -68,20 +72,33 @@ class Search extends Component {
 
     // Prep data
     const searchEndpoint = 'http://localhost:5000/api/search';
+    const headers = {};
+    Object.keys(this.state.headers).forEach(key => {
+      headers[key] = { ...this.state.headers[key] };
+    });
     const desiredHeaders = {};
     Object.entries(this.state.headers).forEach(entry => {
-      if (entry[1].isFetch) desiredHeaders[entry[0]] = 1;
+      if (entry[1].isChecked) {
+        headers[entry[0]].isFetched = 1;
+        desiredHeaders[entry[0]] = 1;
+      } else headers[entry[0]].isFetched = 0;
     });
     const data = { gene: this.state.gene, desiredHeaders };
 
     // Make request
-    this.setState({ isLoading: true });
+    this.setState({ isLoading: true, headers, desiredHeaders });
     axios
       .post(searchEndpoint, data)
       .then(response =>
         this.setState({ searchResults: response.data.genes, isLoading: false })
       )
       .catch(error => this.setState({ error, isLoading: false }));
+  };
+
+  handleToggleDrawer = () => {
+    this.setState(prevState => {
+      return { isDrawerOpen: !prevState.isDrawerOpen };
+    });
   };
 
   sortHandlers = {};
@@ -144,7 +161,7 @@ class Search extends Component {
 
   renderHeaders = grid => {
     Object.entries(this.state.headers).forEach((header, index) => {
-      if (header[1].isFetch && header[1].isHeader) {
+      if (header[1].isFetched && header[1].isHeader) {
         grid.push(
           <SearchGridHeader
             key={index}
@@ -161,7 +178,12 @@ class Search extends Component {
   };
 
   renderSearchResults = grid => {
+    const numCols = Object.values(this.state.headers).filter(
+      header => header.isFetched && header.isHeader
+    ).length;
+
     this.state.searchResults.forEach((result, index1) => {
+      let colsPushed = 0;
       Object.entries(result).forEach((entry, index2) => {
         if (!this.state.headers[entry[0]]) return;
         if (!this.state.headers[entry[0]].isHeader) return;
@@ -177,17 +199,62 @@ class Search extends Component {
             isNucleotideChange={isNucleotideChange}
             isSource={entry[0] === 'Source'}
             openGeneId={this.state.openGeneId}
-            entryValue={entry[1]}
+            entryValue={String(entry[1])}
             result={result}
             click={click}
           />
         );
+        colsPushed++;
       });
+      if (colsPushed !== numCols - 1) {
+        console.log(colsPushed, numCols);
+      }
     });
+  };
+
+  renderHeaderCheckboxes = () => {
+    const checkboxes = [];
+    checkboxes.push(
+      <label key={-1}>
+        <input
+          name="Select All"
+          type="checkbox"
+          checked={this.state.isSelectAll}
+          onChange={this.handleInputChange}
+        />
+        <span />
+        Select All
+      </label>
+    );
+    Object.keys(this.state.headers).forEach((key, index) => {
+      if (!this.state.headers[key].isHeader) return;
+
+      checkboxes.push(
+        <label key={index}>
+          <input
+            name={key}
+            type="checkbox"
+            checked={this.state.headers[key].isChecked}
+            onChange={this.handleInputChange}
+          />
+          <span />
+          {key}
+        </label>
+      );
+    });
+    return (
+      <div
+        style={{ gridTemplateColumns: `repeat(${checkboxes.length},1fr)` }}
+        className={styles.HeaderCheckboxes}
+      >
+        {checkboxes}
+      </div>
+    );
   };
 
   render() {
     let loader = null;
+    let headerCheckboxes = this.renderHeaderCheckboxes();
     let grid = null;
     if (this.state.isLoading) {
       loader = (
@@ -212,13 +279,31 @@ class Search extends Component {
             <SearchGrid
               numCols={
                 Object.values(this.state.headers).filter(
-                  header => header.isFetch && header.isHeader
+                  header => header.isFetched && header.isHeader
                 ).length
               }
               searchResults={grid}
             />
           )}
         </div>
+        <div className={styles.DrawerToggleContainer}>
+          <Button clear circle click={this.handleToggleDrawer}>
+            <div className="material-icons">menu</div>
+          </Button>
+        </div>
+        <Drawer left isOpen={this.state.isDrawerOpen}>
+          <div className={styles.DrawerContents}>
+            <div className={styles.DrawerHeader}>
+              <div className={styles.DrawerCloseContainer}>
+                <Button clear circle click={this.handleToggleDrawer}>
+                  <div className="material-icons">arrow_back</div>
+                </Button>
+              </div>
+              <h4>Categories</h4>
+            </div>
+            {headerCheckboxes}
+          </div>
+        </Drawer>
       </div>
     );
   }

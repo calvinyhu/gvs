@@ -1,0 +1,112 @@
+@import './src/assets/scss/_variables.scss';
+@import './src/assets/scss/_mixins.scss';
+
+/********************************* Base *************************************/
+.Button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  border: none;
+  border-radius: $border-radius-button;
+  box-shadow: $box-shadow;
+  transition: $transition1;
+  appearance: none;
+  user-select: none;
+  cursor: pointer;
+
+  &:focus {
+    outline: none;
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    background: #ccc;
+  }
+}
+
+/********************************* Types *************************************/
+
+.Link {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+
+  &:focus {
+    outline: none;
+  }
+}
+
+/********************************* Shape *************************************/
+
+.Circle {
+  border-radius: 50%;
+}
+
+.Small {
+  padding: $padding-tiny $padding / 2;
+}
+
+/********************************* Color *************************************/
+
+.Clear {
+  background: transparent;
+  color: $md-black;
+  box-shadow: none;
+}
+
+.ClearTouchHover {
+  transition: none;
+  background: transparentize($md-black, 0.93);
+}
+
+.ClearMouseHover {
+  background: transparentize($md-black, 0.93);
+}
+
+.Translucent {
+  background: rgba(0, 0, 0, 0.3);
+  color: $md-white;
+}
+
+.TranslucentTouchHover {
+  transition: none;
+  background: rgba(0, 0, 0, 0.6);
+}
+
+.TranslucentMouseHover {
+  background: rgba(0, 0, 0, 0.6);
+}
+
+.Main {
+  background: $main-theme;
+  color: $md-black;
+}
+
+.MainTouchHover {
+  transition: none;
+  background: $dark-main-theme;
+}
+
+.MainMouseHover {
+  background: $dark-main-theme;
+}
+
+/********************************* Other *************************************/
+
+.NoShadow {
+  box-shadow: none;
+}
+
+.FlexStart {
+  justify-content: flex-start;
+}
+
+.Bold {
+  font-weight: bold;
+}
