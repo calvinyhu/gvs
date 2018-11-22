@@ -69,7 +69,8 @@ SearchGridItem.propTypes = {
   isSource: PropTypes.bool.isRequired,
   openGeneId: PropTypes.string.isRequired,
   entryValue: PropTypes.string.isRequired,
-  result: PropTypes.object.isRequired
+  result: PropTypes.object.isRequired,
+  click: PropTypes.func
 };
 
 export default SearchGridItem;

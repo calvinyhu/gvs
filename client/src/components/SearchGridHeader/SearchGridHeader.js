@@ -37,7 +37,6 @@ SearchGridHeader.propTypes = {
   isSortable: PropTypes.number.isRequired,
   isSorted: PropTypes.bool.isRequired,
   isAscending: PropTypes.bool.isRequired,
-  children: PropTypes.string.isRequired,
   click: PropTypes.func.isRequired
 };
 
