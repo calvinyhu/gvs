@@ -23,8 +23,10 @@ afterEach(() => {
 });
 
 describe('the search bar', () => {
-  it('shows 1 input and 1 button', () => {
+  it('shows 1 form, 1 datalist, 1 input, and 1 button', () => {
+    expect(wrapper.find('form').length).toEqual(1);
     expect(wrapper.find('input').length).toEqual(1);
+    expect(wrapper.find('datalist').length).toEqual(1);
     expect(wrapper.find('button').length).toEqual(1);
   });
 });

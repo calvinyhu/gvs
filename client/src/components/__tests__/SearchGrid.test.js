@@ -20,7 +20,7 @@ describe('the search grid', () => {
 });
 
 describe('the search grid when searchResults contains items', () => {
-  it('shows a grid with numCols of columns', () => {
+  it('shows a grid with the correct number of items', () => {
     const numSearchResults = 50;
     const searchResults = [];
     for (let i = 0; i < numSearchResults; i++)
