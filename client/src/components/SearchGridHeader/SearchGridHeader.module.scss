@@ -1,0 +1,39 @@
+@import './src/assets/scss/_variables.scss';
+
+.SearchGridHeader {
+  white-space: nowrap;
+  background: $main-theme;
+  font-weight: bold;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: $padding / 4 $padding / 2;
+
+  p {
+    margin: $margin / 4;
+  }
+}
+
+.SortableHeader {
+  cursor: pointer;
+  transition: $transition-duration1;
+
+  &:hover {
+    background: $dark-main-theme;
+  }
+}
+
+.SortedHeader {
+  background: $dark-main-theme;
+}
+
+.Arrow {
+  display: flex;
+  margin-left: $margin;
+  transition: $transition-duration1;
+}
+
+.Rotate {
+  transform-origin: center;
+  transform: rotate(180deg);
+}

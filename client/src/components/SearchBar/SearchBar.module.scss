@@ -1,5 +1,5 @@
-@import '../../assets/scss/_variables.scss';
-@import '../../assets/scss/_mixins.scss';
+@import './src/assets/scss/_variables.scss';
+@import './src/assets/scss/_mixins.scss';
 
 .SearchBar {
   width: 100%;
@@ -12,9 +12,22 @@
     input {
       width: 100%;
       appearance: none;
+      background: $md-white;
+      color: $md-black;
       border: $border-input;
       border-radius: $border-radius-input;
       padding: $padding / 2 $padding / 1.5;
+      transition: $transition-duration1;
+
+      &:hover {
+        box-shadow: $box-shadow;
+      }
+
+      &:focus {
+        outline: none;
+        border-color: $main-theme;
+        box-shadow: $box-shadow;
+      }
     }
 
     button {
@@ -29,6 +42,7 @@
       margin-left: $margin;
       transition: $transition-duration1;
       font-weight: bold;
+      box-shadow: $box-shadow;
 
       &:hover {
         background: $dark-main-theme;

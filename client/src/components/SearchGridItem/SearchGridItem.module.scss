@@ -1,0 +1,59 @@
+@import './src/assets/scss/_variables.scss';
+
+$light-gray: lighten(#ccc, 10%);
+
+.SearchGridItem {
+  white-space: nowrap;
+  p {
+    margin: $margin / 4;
+  }
+}
+
+.DarkRow {
+  background: $light-gray;
+}
+
+.EntryName {
+  display: flex;
+  align-items: center;
+
+  a {
+    color: $darker-main-theme;
+  }
+}
+
+.NucleotideChange {
+  cursor: pointer;
+  transition: $transition-duration2;
+
+  &:hover {
+    background: $light-main-theme;
+  }
+}
+
+.Variants {
+  transition: $transition-duration1;
+  display: none;
+
+  p {
+    margin-left: $margin * 1.75;
+
+    &:last-child {
+      margin-bottom: 0;
+      padding-bottom: $margin / 4;
+    }
+  }
+}
+
+.isOpen {
+  display: block;
+}
+
+.Carrot {
+  display: flex;
+  transition: $transition-duration1;
+}
+
+.Rotate90 {
+  transform: rotate(90deg);
+}

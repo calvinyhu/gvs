@@ -30,7 +30,9 @@ const SearchBar = props => {
           onChange={props.handleInputChange}
         />
         <datalist id="suggestions">{options}</datalist>
-        <button onClick={props.handleSearch}>Search</button>
+        <button name="search" onClick={props.handleSearch}>
+          Search
+        </button>
       </form>
     </div>
   );

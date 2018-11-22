@@ -1,6 +1,5 @@
-@import '../../assets/scss/_variables.scss';
-
-$light-gray: lighten(#ccc, 10%);
+@import './src/assets/scss/_variables.scss';
+@import './src/assets/scss/_classes.scss';
 
 .Search {
   width: 100%;
@@ -12,97 +11,18 @@ $light-gray: lighten(#ccc, 10%);
 }
 
 .SearchGridContainer {
+  display: flex;
+  flex-direction: column;
   width: 100%;
   overflow: auto;
   margin: $margin;
+  margin-bottom: 0;
 }
 
-.SearchGridHeader,
-.SearchGridItem {
-  white-space: nowrap;
-  p {
-    margin: $margin / 4;
-  }
-}
-
-.SearchGridHeader {
-  background: $main-theme;
-  font-weight: bold;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: $padding / 4 $padding / 2;
-}
-
-.DarkRow {
-  background: $light-gray;
-}
-
-.SortableHeader {
-  cursor: pointer;
-  transition: $transition-duration1;
-
-  &:hover {
-    background: $dark-main-theme;
-  }
-}
-
-.SortedHeader {
-  background: $dark-main-theme;
-}
-
-.Arrow {
-  display: flex;
-  margin-left: $margin;
-  transition: $transition-duration1;
-}
-
-.Rotate {
-  transform-origin: center;
-  transform: rotate(180deg);
-}
-
-.NucleotideChange {
-  cursor: pointer;
-  transition: $transition-duration2;
-
-  &:hover {
-    background: $light-main-theme;
-  }
-}
-
-.EntryName {
-  display: flex;
-  align-items: center;
-
-  a {
-    color: $darker-main-theme;
-  }
-}
-
-.Variants {
-  transition: $transition-duration1;
-  display: none;
-
-  p {
-    margin-left: $margin * 1.75;
-
-    &:last-child {
-      margin-bottom: 0;
-      padding-bottom: $margin / 4;
-    }
-  }
-}
-
-.isOpen {
-  display: block;
-}
-
-.Carrot {
-  display: flex;
-  transition: $transition-duration1;
-}
-
-.Rotate90 {
-  transform: rotate(90deg);
+.LoaderContainer {
+  width: 4rem;
+  height: 4rem;
+  overflow: hidden;
+  justify-self: center;
+  align-self: center;
 }

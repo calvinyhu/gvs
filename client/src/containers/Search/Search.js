@@ -1,13 +1,15 @@
 import React, { Component } from 'react';
 import axios from 'axios';
-import classnames from 'classnames';
 
 import styles from './Search.module.scss';
 import SearchBar from '../../components/SearchBar/SearchBar';
 import SearchGrid from '../../components/SearchGrid/SearchGrid';
+import SearchGridHeader from '../../components/SearchGridHeader/SearchGridHeader';
+import SearchGridItem from '../../components/SearchGridItem/SearchGridItem';
 
 class Search extends Component {
   state = {
+    isLoading: false,
     gene: '',
     headers: {
       Gene: { isFetch: 1, isHeader: 1, isSortable: 0 },
@@ -73,10 +75,13 @@ class Search extends Component {
     const data = { gene: this.state.gene, desiredHeaders };
 
     // Make request
+    this.setState({ isLoading: true });
     axios
       .post(searchEndpoint, data)
-      .then(response => this.setState({ searchResults: response.data.genes }))
-      .catch(error => this.setState({ error }));
+      .then(response =>
+        this.setState({ searchResults: response.data.genes, isLoading: false })
+      )
+      .catch(error => this.setState({ error, isLoading: false }));
   };
 
   sortHandlers = {};
@@ -129,125 +134,68 @@ class Search extends Component {
     });
   };
 
-  renderSearchResults = () => {
+  renderGrid = () => {
     if (this.state.searchResults.length === 0) return [];
+    const grid = [];
+    this.renderHeaders(grid);
+    this.renderSearchResults(grid);
+    return grid;
+  };
 
-    const searchResults = [];
-
-    // Push Headers
+  renderHeaders = grid => {
     Object.entries(this.state.headers).forEach((header, index) => {
       if (header[1].isFetch && header[1].isHeader) {
-        const isSortable = this.state.headers[header[0]].isSortable;
-        const isSorted = this.state.sortedHeader.name === header[0];
-
-        const arrowClasses = classnames({
-          [styles.Arrow]: true,
-          [styles.Rotate]: isSorted && !this.state.sortedHeader.isAscending
-        });
-
-        const arrow = (
-          <div className={arrowClasses}>
-            <div className="material-icons">keyboard_arrow_up</div>
-          </div>
-        );
-
-        const searchGridHeaderClasses = classnames({
-          [styles.SearchGridHeader]: true,
-          [styles.SortableHeader]: isSortable,
-          [styles.SortedHeader]: isSorted
-        });
-
-        let onClick = null;
-        if (isSortable) onClick = this.getSortHandler(header[0]);
-
-        searchResults.push(
-          <div
+        grid.push(
+          <SearchGridHeader
             key={index}
-            className={searchGridHeaderClasses}
-            onClick={onClick}
+            isSortable={this.state.headers[header[0]].isSortable}
+            isSorted={this.state.sortedHeader.name === header[0]}
+            isAscending={this.state.sortedHeader.isAscending}
+            click={this.getSortHandler(header[0])}
           >
             {header[0]}
-            {isSorted ? arrow : null}
-          </div>
+          </SearchGridHeader>
         );
       }
     });
+  };
 
-    // Push Results
+  renderSearchResults = grid => {
     this.state.searchResults.forEach((result, index1) => {
       Object.entries(result).forEach((entry, index2) => {
         if (!this.state.headers[entry[0]]) return;
         if (!this.state.headers[entry[0]].isHeader) return;
 
-        let onClick = null;
+        let click = null;
         const isNucleotideChange = entry[0] === 'Nucleotide Change';
-        if (isNucleotideChange)
-          onClick = this.getShowVariantsHandler(result._id);
+        if (isNucleotideChange) click = this.getShowVariantsHandler(result._id);
 
-        const isSource = entry[0] === 'Source';
-        let sourceLink = null;
-        if (isSource) {
-          sourceLink = (
-            <a href={result.URL} target="_blank" rel="noopener noreferrer">
-              {entry[1] ? entry[1] : '-'}
-            </a>
-          );
-        }
-
-        const gridItemClasses = classnames({
-          [styles.SearchGridItem]: true,
-          [styles.DarkRow]: index1 % 2 === 0,
-          [styles.NucleotideChange]: isNucleotideChange
-        });
-
-        const carrotClasses = classnames({
-          [styles.Carrot]: true,
-          [styles.Rotate90]: this.state.openGeneId === result._id
-        });
-        const carrot = (
-          <div className={carrotClasses}>
-            <div className="material-icons">chevron_right</div>
-          </div>
-        );
-
-        const entryName = (
-          <div className={styles.EntryName}>
-            {isNucleotideChange ? carrot : null}
-            {isSource ? sourceLink : <p>{entry[1] ? entry[1] : '-'}</p>}
-          </div>
-        );
-
-        const variantClasses = classnames({
-          [styles.Variants]: true,
-          [styles.isOpen]: this.state.openGeneId === result._id
-        });
-        let variants = null;
-        if (isNucleotideChange) {
-          let otherMappings = result['Other Mappings'].split(',');
-          otherMappings = otherMappings.map((variant, index) => (
-            <p key={index}>{variant}</p>
-          ));
-          variants = <div className={variantClasses}>{otherMappings}</div>;
-        }
-
-        searchResults.push(
-          <div
+        grid.push(
+          <SearchGridItem
             key={index1 + ' ' + index2}
-            className={gridItemClasses}
-            onClick={onClick}
-          >
-            {entryName}
-            {variants}
-          </div>
+            isDarkRow={index1 % 2 === 0}
+            isNucleotideChange={isNucleotideChange}
+            isSource={entry[0] === 'Source'}
+            openGeneId={this.state.openGeneId}
+            entryValue={entry[1]}
+            result={result}
+            click={click}
+          />
         );
       });
     });
-
-    return searchResults;
   };
 
   render() {
-    const searchResults = this.renderSearchResults();
+    let loader = null;
+    let grid = null;
+    if (this.state.isLoading) {
+      loader = (
+        <div className={styles.LoaderContainer}>
+          <div className={styles.Loader} />
+        </div>
+      );
+    } else grid = this.renderGrid();
 
     return (
       <div className={styles.Search}>
@@ -258,14 +206,18 @@ class Search extends Component {
           handleSearch={this.handleSearch}
         />
         <div className={styles.SearchGridContainer}>
-          <SearchGrid
-            numCols={
-              Object.values(this.state.headers).filter(
-                header => header.isFetch && header.isHeader
-              ).length
-            }
-            searchResults={searchResults}
-          />
+          {this.state.isLoading ? (
+            loader
+          ) : (
+            <SearchGrid
+              numCols={
+                Object.values(this.state.headers).filter(
+                  header => header.isFetch && header.isHeader
+                ).length
+              }
+              searchResults={grid}
+            />
+          )}
         </div>
       </div>
     );

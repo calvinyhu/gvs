@@ -27,6 +27,7 @@ $box-shadow-card: 0px 3px 20px 0px rgba(0, 0, 0, 0.5);
 
 // Colors
 $main-theme: #78c0c0;
+$lighter-main-theme: lighten($main-theme, 20%);
 $light-main-theme: lighten($main-theme, 10%);
 $dark-main-theme: darken($main-theme, 10%);
 $darker-main-theme: darken($main-theme, 20%);
