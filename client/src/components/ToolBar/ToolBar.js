@@ -5,7 +5,7 @@ import styles from './ToolBar.module.scss';
 import SearchBar from '../SearchBar/SearchBar';
 import Button from '../UI/Button/Button';
 
-const ToolBar = props => {
+const toolBar = props => {
   return (
     <div className={styles.ToolBar}>
       <div className={styles.DrawerToggleContainer}>
@@ -21,11 +21,23 @@ const ToolBar = props => {
           handleSearch={props.handleSearch}
         />
       </div>
+      <div className={styles.DisplayOption}>
+        <label>
+          <input
+            name="isCondensed"
+            type="checkbox"
+            checked={props.isCondensed}
+            onChange={props.handleInputChange}
+          />
+          <span />
+          Condensed
+        </label>
+      </div>
     </div>
   );
 };
 
-ToolBar.propTypes = {
+toolBar.propTypes = {
   gene: PropTypes.string.isRequired,
   suggestions: PropTypes.array.isRequired,
   handleInputChange: PropTypes.func.isRequired,
@@ -33,4 +45,4 @@ ToolBar.propTypes = {
   handleToggleDrawer: PropTypes.func.isRequired
 };
 
-export default ToolBar;
+export default toolBar;

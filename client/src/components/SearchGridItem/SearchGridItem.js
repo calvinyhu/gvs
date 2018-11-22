@@ -41,8 +41,12 @@ const SearchGridItem = props => {
     );
   }
 
+  const entryNameClasses = classnames({
+    [styles.EntryName]: true,
+    [styles.NucleotideChange]: props.isNucleotideChange
+  });
   const entryName = (
-    <div className={styles.EntryName}>
+    <div className={entryNameClasses} onClick={props.click}>
       {carrot}
       {props.isSource ? (
         sourceLink
@@ -55,11 +59,11 @@ const SearchGridItem = props => {
   const gridItemClasses = classnames({
     [styles.SearchGridItem]: true,
     [styles.DarkRow]: props.isDarkRow,
-    [styles.NucleotideChange]: props.isNucleotideChange
+    [styles.Condensed]: props.isCondensed
   });
 
   return (
-    <div className={gridItemClasses} onClick={props.click}>
+    <div className={gridItemClasses}>
       {entryName}
       {variants}
     </div>
@@ -68,6 +72,7 @@ const SearchGridItem = props => {
 
 SearchGridItem.propTypes = {
   isDarkRow: PropTypes.bool.isRequired,
+  isCondensed: PropTypes.bool.isRequired,
   isNucleotideChange: PropTypes.bool.isRequired,
   isSource: PropTypes.bool.isRequired,
   openGeneId: PropTypes.string.isRequired,

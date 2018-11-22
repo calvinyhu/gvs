@@ -15,6 +15,7 @@ class Search extends Component {
     isLoading: false,
     isDrawerOpen: false,
     isSelectAll: false,
+    isCondensed: false,
     gene: '',
     headers: geneHeaders,
     desiredHeaders: {},
@@ -63,6 +64,9 @@ class Search extends Component {
         headers[key] = { ...this.state.headers[key], isChecked: checkedOrNot };
       });
       this.setState({ isSelectAll: Boolean(checkedOrNot), headers });
+    } else if (targetName === 'isCondensed') {
+      const isCondensed = this.state.isCondensed;
+      this.setState({ [targetName]: !isCondensed });
     }
   };
 
@@ -190,6 +194,7 @@ class Search extends Component {
           <SearchGridItem
             key={index1 + ' ' + index2}
             isDarkRow={index1 % 2 === 0}
+            isCondensed={this.state.isCondensed}
             isNucleotideChange={result[key] ? isNucleotideChange : false}
             isSource={result[key] ? isSource : false}
             openGeneId={result[key] ? this.state.openGeneId : ''}

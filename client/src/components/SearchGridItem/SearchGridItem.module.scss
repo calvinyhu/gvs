@@ -4,12 +4,17 @@ $light-gray: lighten(#ccc, 10%);
 
 .SearchGridItem {
   display: flex;
-  align-items: center;
-  white-space: nowrap;
+  flex-direction: column;
+  width: 100%;
+  overflow: hidden;
 
   p {
-    margin: $margin / 4;
+    margin: $margin / 4 $margin / 2;
   }
+}
+
+.Condensed {
+  white-space: nowrap;
 }
 
 .DarkRow {
@@ -22,6 +27,7 @@ $light-gray: lighten(#ccc, 10%);
 
   a {
     color: $darker-main-theme;
+    margin: $margin / 4;
   }
 }
 
@@ -39,7 +45,7 @@ $light-gray: lighten(#ccc, 10%);
   display: none;
 
   p {
-    margin-left: $margin * 1.75;
+    margin-left: $margin * 2;
 
     &:last-child {
       margin-bottom: 0;
