@@ -47,7 +47,7 @@ class Search extends Component {
       return;
     }
     this.setState({ isLoadingSuggestions: true });
-    const suggestionEndpoint = 'http://localhost:5000/api/search/suggestion';
+    const suggestionEndpoint = '/api/search/suggestion';
     const data = { gene: targetVal };
     axios
       .post(suggestionEndpoint, data)
@@ -111,7 +111,7 @@ class Search extends Component {
     this.setState({ isLoading: true, headers, desiredHeaders, numCols });
 
     // Make Request
-    const searchEndpoint = 'http://localhost:5000/api/search';
+    const searchEndpoint = '/api/search';
     const data = { gene: this.state.gene, desiredHeaders };
     axios
       .post(searchEndpoint, data)
