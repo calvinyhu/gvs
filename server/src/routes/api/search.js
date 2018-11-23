@@ -18,15 +18,11 @@ router.post('/', (req, res) => {
 // POST /suggestion
 // Retrieve auto-complete suggestions from given gene name
 router.post('/suggestion', (req, res) => {
-  Gene.find({ Gene: { $regex: '^' + req.body.gene.toUpperCase() } }, 'Gene', {
-    sort: { Gene: 1 }
-  })
-    .then(suggestions => {
-      res.json({ suggestions, gene: req.body.gene });
-    })
-    .catch(error => {
-      res.status(400).json({ error });
-    });
+  const gene = req.body.gene.toUpperCase();
+  Gene.distinct('Gene', { Gene: new RegExp('^' + gene) }, (error, uniques) => {
+    if (error) res.status(400).json({ error });
+    res.json({ suggestions: uniques, gene: req.body.gene });
+  });
 });
 
 module.exports = router;

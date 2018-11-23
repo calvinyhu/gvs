@@ -5,18 +5,10 @@ import styles from './SearchBar.module.scss';
 import Button from '../UI/Button/Button';
 
 const SearchBar = props => {
-  const suggestions = {};
-  let options = [];
-
+  const options = [];
   if (props.suggestions.length > 0) {
-    props.suggestions.forEach(suggestion => {
-      const gene = suggestion.Gene;
-      suggestions[gene] = suggestions[gene] ? ++suggestions[gene] : 1;
-    });
-
-    options = Object.keys(suggestions).map((suggestion, index) => (
-      <option key={index} value={suggestion} />
-    ));
+    for (let i = 0; i < 8; i++)
+      options.push(<option key={i} value={props.suggestions[i]} />);
   }
 
   let loader = null;
@@ -40,9 +32,9 @@ const SearchBar = props => {
             list="suggestions"
             onChange={props.handleInputChange}
           />
+          <datalist id="suggestions">{options}</datalist>
           {loader}
         </div>
-        <datalist id="suggestions">{options}</datalist>
         <div className={styles.SearchButtonContainer}>
           <Button
             disabled={!props.gene}
