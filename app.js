@@ -26,7 +26,7 @@ const app = express();
 // CORS
 // TODO: Create white list of allowed origins
 // See https://daveceddia.com/access-control-allow-origin-cors-errors-in-react-express/
-app.use(cors());
+if (process.env.NODE_ENV !== 'production') app.use(cors());
 // parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: false }));
 // parse application/json
