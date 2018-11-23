@@ -8,7 +8,8 @@ const search = require('./routes/api/search');
 // Database Setup
 mongoose
   .connect(
-    'mongodb://calvinyhu:calvinyhu1@ds249737.mlab.com:49737/gvs',
+    process.env.PROD_MONGODB ||
+      'mongodb://calvinyhu:calvinyhu1@ds249737.mlab.com:49737/gvs',
     { useNewUrlParser: true }
   )
   .then(() => {
