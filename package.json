@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "installAll": "npm install && (cd client && npm install)",
-    "test": "mocha **/*.test.js",
+    "test": "mocha ./routes/**/*.test.js",
     "client": "npm start --prefix client",
     "server": "nodemon index.js",
     "dev": "concurrently \"npm run server\" \"npm run client\""
