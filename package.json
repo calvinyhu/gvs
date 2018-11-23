@@ -2,23 +2,27 @@
   "name": "gvs",
   "version": "1.0.0",
   "description": "",
+  "main": "index.js",
   "scripts": {
-    "installAll": "npm install && (cd client && npm install) && (cd ../server && npm install)",
+    "installAll": "npm install && (cd client && npm install)",
+    "test": "mocha **/*.test.js",
     "client": "npm start --prefix client",
-    "server": "npm run server --prefix server",
+    "server": "nodemon index.js",
     "dev": "concurrently \"npm run server\" \"npm run client\""
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/calvinyhu/gvs.git"
   },
   "author": "",
   "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/calvinyhu/gvs/issues"
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "cors": "^2.8.5",
+    "express": "^4.16.4",
+    "mongoose": "^5.3.13",
+    "nodemon": "^1.18.6"
   },
-  "homepage": "https://github.com/calvinyhu/gvs#readme",
   "devDependencies": {
+    "chai": "^4.2.0",
+    "chai-http": "^4.2.0",
+    "mocha": "^5.2.0",
     "concurrently": "^4.1.0"
   }
 }
