@@ -108,7 +108,14 @@ class Search extends Component {
     const numCols = Object.values(headers).filter(
       header => header.isFetched && header.isHeader
     ).length;
-    this.setState({ isLoading: true, headers, desiredHeaders, numCols });
+    this.setState({
+      isLoading: true,
+      headers,
+      desiredHeaders,
+      numCols,
+      sortedHeader: { name: '', isAscending: false },
+      openGeneId: ''
+    });
 
     // Make Request
     const searchEndpoint = '/api/search';
