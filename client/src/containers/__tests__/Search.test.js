@@ -46,7 +46,10 @@ describe('the search container', () => {
     wrapper.setState({ gene: 'BRAF' });
     expect(wrapper.find(SearchBar).props().gene).toEqual('BRAF');
 
-    wrapper.find('button').simulate('click');
+    wrapper
+      .find(SearchBar)
+      .find('button')
+      .simulate('click');
     expect(wrapper.state().isLoading).toEqual(true);
 
     moxios.wait(() => {

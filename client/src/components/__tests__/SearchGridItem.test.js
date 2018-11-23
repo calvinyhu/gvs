@@ -9,6 +9,7 @@ const clickMock = jest.fn();
 beforeEach(() => {
   wrapper = shallow(
     <SearchGridItem
+      isCondensed={true}
       isDarkRow={false}
       isNucleotideChange={false}
       isSource={false}
