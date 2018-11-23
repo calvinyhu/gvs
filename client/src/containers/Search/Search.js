@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import axios from 'axios';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 
 import styles from './Search.module.scss';
 import ToolBar from '../../components/ToolBar/ToolBar';
@@ -9,11 +10,37 @@ import SearchGridItem from '../../components/SearchGridItem/SearchGridItem';
 import Drawer from '../../components/UI/Drawer/Drawer';
 import Button from '../../components/UI/Button/Button';
 import geneHeaders from '../../database/geneHeaders';
+import * as searchActions from '../../store/actions/searchActions';
+
+const mapStateToProps = state => ({
+  isLoadingSearchResults: state.search.isLoadingSearchResults,
+  isLoadingSuggestions: state.search.isLoadingSuggestions,
+  searchResults: state.search.searchResults,
+  suggestions: state.search.suggestions,
+  error: state.search.error
+});
+
+const mapDispatchToProps = {
+  onSearch: searchActions.search,
+  onSuggest: searchActions.suggest,
+  onSortSearchResults: searchActions.sortSearchResults,
+  onResetSuggestions: searchActions.resetSuggestions
+};
 
 class Search extends Component {
+  static propTypes = {
+    isLoadingSearchResults: PropTypes.bool.isRequired,
+    isLoadingSuggestions: PropTypes.bool.isRequired,
+    searchResults: PropTypes.array.isRequired,
+    suggestions: PropTypes.array.isRequired,
+    error: PropTypes.object.isRequired,
+    onSearch: PropTypes.func.isRequired,
+    onSuggest: PropTypes.func.isRequired,
+    onSortSearchResults: PropTypes.func.isRequired,
+    onResetSuggestions: PropTypes.func.isRequired
+  };
+
   state = {
-    isLoading: false,
-    isLoadingSuggestions: false,
     isDrawerOpen: false,
     isSelectAll: false,
     isCondensed: true,
@@ -22,43 +49,24 @@ class Search extends Component {
     numCols: 0,
     desiredHeaders: {},
     sortedHeader: { name: '', isAscending: false },
-    openGeneId: '',
-    searchResults: [],
-    suggestions: [],
-    error: {}
+    openGeneId: ''
   };
 
   handleInputChange = event => {
     if (!event) return;
     const targetName = event.target.name;
     const targetVal = event.target.value;
-    if (targetName === 'gene')
-      this.handleGeneInputChange(targetName, targetVal);
+    if (targetName === 'gene') this.handleGeneInputChange(targetVal);
     else if (this.state.headers[targetName])
       this.handleHeaderCheckboxChange(targetName);
     else if (targetName === 'Select All') this.handleSelectAllChange();
     else if (targetName === 'isCondensed') this.handleCondensedChange();
   };
 
-  handleGeneInputChange = (targetName, targetVal) => {
-    this.setState({ [targetName]: targetVal });
-    if (!targetVal) {
-      this.setState({ suggestions: [], isLoadingSuggestions: false });
-      return;
-    }
-    this.setState({ isLoadingSuggestions: true });
-    const suggestionEndpoint = '/api/search/suggestion';
-    const data = { gene: targetVal };
-    axios
-      .post(suggestionEndpoint, data)
-      .then(response => {
-        if (response.data.gene !== this.state.gene) return;
-        this.setState({
-          suggestions: response.data.suggestions,
-          isLoadingSuggestions: false
-        });
-      })
-      .catch(error => this.setState({ error, isLoadingSuggestions: false }));
+  handleGeneInputChange = gene => {
+    this.setState({ gene });
+    if (!gene) this.props.onResetSuggestions();
+    else this.props.onSuggest(gene);
   };
 
   handleHeaderCheckboxChange = targetName => {
@@ -109,7 +117,6 @@ class Search extends Component {
       header => header.isFetched && header.isHeader
     ).length;
     this.setState({
-      isLoading: true,
       headers,
       desiredHeaders,
       numCols,
@@ -118,14 +125,7 @@ class Search extends Component {
     });
 
     // Make Request
-    const searchEndpoint = '/api/search';
-    const data = { gene: this.state.gene, desiredHeaders };
-    axios
-      .post(searchEndpoint, data)
-      .then(response =>
-        this.setState({ searchResults: response.data.genes, isLoading: false })
-      )
-      .catch(error => this.setState({ error, isLoading: false }));
+    this.props.onSearch(this.state.gene, desiredHeaders);
   };
 
   handleToggleDrawer = () => {
@@ -149,11 +149,13 @@ class Search extends Component {
         !this.state.sortedHeader.isAscending
     };
     const searchResults = [];
-    this.state.searchResults.forEach(result =>
+    this.props.searchResults.forEach(result =>
       searchResults.push({ ...result })
     );
     searchResults.sort(this.compare(sortedHeader));
-    this.setState({ searchResults, sortedHeader });
+    this.setState({ sortedHeader });
+
+    this.props.onSortSearchResults(searchResults);
   };
 
   compare = sortedHeader => {
@@ -181,7 +183,7 @@ class Search extends Component {
   };
 
   renderGrid = () => {
-    if (this.state.searchResults.length === 0) return [];
+    if (this.props.searchResults.length === 0) return [];
     const grid = [];
     this.renderHeaders(grid);
     this.renderSearchResults(grid);
@@ -207,7 +209,7 @@ class Search extends Component {
   };
 
   renderSearchResults = grid => {
-    this.state.searchResults.forEach((result, index1) => {
+    this.props.searchResults.forEach((result, index1) => {
       Object.keys(this.state.desiredHeaders).forEach((key, index2) => {
         // Skip these since they are not headers and are part of other fields
         if (!this.state.headers[key].isHeader) return;
@@ -265,21 +267,13 @@ class Search extends Component {
         </label>
       );
     });
-    return (
-      <div
-        style={{ gridTemplateColumns: `repeat(${checkboxes.length},1fr)` }}
-        className={styles.HeaderCheckboxes}
-      >
-        {checkboxes}
-      </div>
-    );
+    return <div className={styles.HeaderCheckboxes}>{checkboxes}</div>;
   };
 
   render() {
     let loader = null;
-    let headerCheckboxes = this.renderHeaderCheckboxes();
     let grid = [];
-    if (this.state.isLoading) {
+    if (this.props.isLoadingSearchResults) {
       loader = (
         <div className={styles.LoaderContainer}>
           <div className={styles.Loader} />
@@ -287,37 +281,52 @@ class Search extends Component {
       );
     } else grid = this.renderGrid();
 
+    const toolbar = (
+      <ToolBar
+        isLoadingSuggestions={this.props.isLoadingSuggestions}
+        isCondensed={this.state.isCondensed}
+        gene={this.state.gene}
+        suggestions={this.props.suggestions}
+        handleInputChange={this.handleInputChange}
+        handleSearch={this.handleSearch}
+        handleToggleDrawer={this.handleToggleDrawer}
+      />
+    );
+
+    const searchGrid = (
+      <div className={styles.SearchGridContainer}>
+        {loader}
+        <SearchGrid numCols={this.state.numCols} searchResults={grid} />
+      </div>
+    );
+
+    const drawer = (
+      <Drawer left isOpen={this.state.isDrawerOpen}>
+        <div className={styles.DrawerContents}>
+          <div className={styles.DrawerHeader}>
+            <div className={styles.DrawerCloseContainer}>
+              <Button clear circle click={this.handleToggleDrawer}>
+                <div className="material-icons">arrow_back</div>
+              </Button>
+            </div>
+            <h4>Categories</h4>
+          </div>
+          {this.renderHeaderCheckboxes()}
+        </div>
+      </Drawer>
+    );
+
     return (
       <div className={styles.Search}>
-        <ToolBar
-          isLoadingSuggestions={this.state.isLoadingSuggestions}
-          isCondensed={this.state.isCondensed}
-          gene={this.state.gene}
-          suggestions={this.state.suggestions}
-          handleInputChange={this.handleInputChange}
-          handleSearch={this.handleSearch}
-          handleToggleDrawer={this.handleToggleDrawer}
-        />
-        <div className={styles.SearchGridContainer}>
-          {loader}
-          <SearchGrid numCols={this.state.numCols} searchResults={grid} />
-        </div>
-        <Drawer left isOpen={this.state.isDrawerOpen}>
-          <div className={styles.DrawerContents}>
-            <div className={styles.DrawerHeader}>
-              <div className={styles.DrawerCloseContainer}>
-                <Button clear circle click={this.handleToggleDrawer}>
-                  <div className="material-icons">arrow_back</div>
-                </Button>
-              </div>
-              <h4>Categories</h4>
-            </div>
-            {headerCheckboxes}
-          </div>
-        </Drawer>
+        {toolbar}
+        {searchGrid}
+        {drawer}
       </div>
     );
   }
 }
 
-export default Search;
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Search);
