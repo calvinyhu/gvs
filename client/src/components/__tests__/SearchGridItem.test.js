@@ -42,7 +42,7 @@ describe('the search grid item', () => {
 });
 
 describe('the search grid item when it is a Nucleotide Change', () => {
-  it('shows a search grid item with an entry name, gene variants, and carrot', () => {
+  it('shows a search grid item with an entry name, gene variants, any comments, and carrot', () => {
     const numMappings = 10;
     const mappings = [];
     for (let i = 0; i < numMappings; i++) mappings.push('mapping' + i);
@@ -56,8 +56,8 @@ describe('the search grid item when it is a Nucleotide Change', () => {
       }
     });
 
-    expect(wrapper.find('div').length).toEqual(5);
-    expect(wrapper.find('p').length).toEqual(numMappings + 1);
+    expect(wrapper.find('div').length).toEqual(6);
+    expect(wrapper.find('p').length).toEqual(numMappings + 2);
   });
 });
 

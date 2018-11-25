@@ -10,7 +10,7 @@ export const search = (gene, desiredHeaders) => dispatch => {
     .catch(error => dispatch(searchFail(error)));
 };
 
-const searchStart = () => ({
+export const searchStart = () => ({
   type: types.GET_SEARCH_RESULTS_START,
   payload: {
     isLoadingSearchResults: true,
@@ -19,7 +19,7 @@ const searchStart = () => ({
   }
 });
 
-const searchSuccess = searchResults => ({
+export const searchSuccess = searchResults => ({
   type: types.GET_SEARCH_RESULTS_SUCCESS,
   payload: {
     isLoadingSearchResults: false,
@@ -27,7 +27,7 @@ const searchSuccess = searchResults => ({
   }
 });
 
-const searchFail = error => ({
+export const searchFail = error => ({
   type: types.GET_SEARCH_RESULTS_FAIL,
   payload: {
     isLoadingSearchResults: false,
@@ -43,7 +43,7 @@ export const suggest = gene => dispatch => {
     .catch(error => dispatch(suggestFail(error)));
 };
 
-const suggestStart = () => ({
+export const suggestStart = () => ({
   type: types.GET_SUGGESTIONS_START,
   payload: {
     isLoadingSuggestions: true,
@@ -52,7 +52,7 @@ const suggestStart = () => ({
   }
 });
 
-const suggestSuccess = suggestions => ({
+export const suggestSuccess = suggestions => ({
   type: types.GET_SUGGESTIONS_SUCCESS,
   payload: {
     isLoadingSuggestions: false,
@@ -60,7 +60,7 @@ const suggestSuccess = suggestions => ({
   }
 });
 
-const suggestFail = error => ({
+export const suggestFail = error => ({
   type: types.GET_SUGGESTIONS_FAIL,
   payload: {
     isLoadingSuggestions: false,

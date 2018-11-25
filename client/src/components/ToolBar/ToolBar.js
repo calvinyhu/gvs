@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 
 import styles from './ToolBar.module.scss';
 import SearchBar from '../SearchBar/SearchBar';
-import Input from '../UI/Input/Input';
 import Button from '../UI/Button/Button';
 
 const toolBar = props => {
