@@ -21,7 +21,7 @@ class SearchGridItem extends Component {
     if (this.props.isNucleotideChange) {
       const carrotClasses = classnames({
         [styles.Carrot]: true,
-        [styles.Rotate90]: this.props.openGeneId === this.props.result._id
+        [styles.Rotate90]: this.props.openGeneIds[this.props.result._id]
       });
       carrot = (
         <div className={carrotClasses}>
@@ -31,7 +31,7 @@ class SearchGridItem extends Component {
 
       const variantClasses = classnames({
         [styles.Variants]: true,
-        [styles.isOpen]: this.props.openGeneId === this.props.result._id
+        [styles.isOpen]: this.props.openGeneIds[this.props.result._id]
       });
       let otherMappings = [];
       if (this.props.result) {
@@ -113,7 +113,7 @@ SearchGridItem.propTypes = {
   isCondensed: PropTypes.bool.isRequired,
   isNucleotideChange: PropTypes.bool.isRequired,
   isSource: PropTypes.bool.isRequired,
-  openGeneId: PropTypes.string.isRequired,
+  openGeneIds: PropTypes.string.isRequired,
   entryValue: PropTypes.string.isRequired,
   result: PropTypes.object.isRequired,
   click: PropTypes.func

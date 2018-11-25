@@ -49,7 +49,7 @@ class Search extends Component {
     numCols: 0,
     desiredHeaders: {},
     sortedHeader: { name: '', isAscending: false },
-    openGeneId: ''
+    openGeneIds: {}
   };
 
   handleInputChange = event => {
@@ -123,7 +123,7 @@ class Search extends Component {
       desiredHeaders,
       numCols,
       sortedHeader: { name: '', isAscending: false },
-      openGeneId: ''
+      openGeneIds: {}
     });
 
     // Make Request
@@ -179,9 +179,13 @@ class Search extends Component {
   };
 
   handleShowVariants = geneId => {
-    this.setState(prevState => {
-      return { openGeneId: prevState.openGeneId === geneId ? '' : geneId };
-    });
+    const openGeneIds = { ...this.state.openGeneIds };
+    if (openGeneIds[geneId]) openGeneIds[geneId] = 0;
+    else openGeneIds[geneId] = 1;
+    this.setState({ openGeneIds });
+    // this.setState(prevState => {
+    //   return { openGeneIds: prevState.openGeneIds === geneId ? '' : geneId };
+    // });
   };
 
   renderGrid = () => {
@@ -230,7 +234,7 @@ class Search extends Component {
             isCondensed={this.state.isCondensed}
             isNucleotideChange={result[key] ? isNucleotideChange : false}
             isSource={result[key] ? isSource : false}
-            openGeneId={result[key] ? this.state.openGeneId : ''}
+            openGeneIds={result[key] ? this.state.openGeneIds : {}}
             entryValue={result[key] ? String(result[key]) : ''}
             result={result[key] ? result : {}}
             click={result[key] ? click : null}
