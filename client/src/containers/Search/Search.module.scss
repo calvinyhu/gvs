@@ -24,7 +24,9 @@
 }
 
 .LoaderContainer {
+  min-width: 4rem;
   width: 4rem;
+  min-height: 4rem;
   height: 4rem;
   overflow: hidden;
   justify-self: center;
