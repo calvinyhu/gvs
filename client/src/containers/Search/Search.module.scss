@@ -20,6 +20,7 @@
   overflow: auto;
   margin: $margin;
   margin-bottom: 0;
+  padding-bottom: 20rem;
 }
 
 .LoaderContainer {
@@ -65,9 +66,11 @@
 
   .Misc {
     width: auto;
+    min-height: 4.5rem;
     display: flex;
     flex-direction: column;
-    margin-bottom: $margin * 2;
+    border-bottom: 1px solid #ccc;
+    margin-bottom: $margin;
   }
 
   .HeaderCheckboxes {

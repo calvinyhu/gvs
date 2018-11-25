@@ -6,7 +6,7 @@ $light-gray: lighten(#ccc, 10%);
   display: flex;
   flex-direction: column;
   width: 100%;
-  overflow: hidden;
+  position: relative;
 
   p {
     margin: $margin / 4 $margin / 2;
@@ -65,4 +65,25 @@ $light-gray: lighten(#ccc, 10%);
 
 .Rotate90 {
   transform: rotate(90deg);
+}
+
+.Comment {
+  display: none;
+  position: absolute;
+  top: 0;
+  left: 100%;
+  z-index: 1;
+  background: $md-white;
+  width: 20rem;
+  max-height: 20rem;
+  box-shadow: $box-shadow-card;
+  overflow: auto;
+}
+
+.ShowComment {
+  display: block;
+
+  p {
+    white-space: normal;
+  }
 }

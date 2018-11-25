@@ -77,8 +77,10 @@ class Search extends Component {
     const isChecked = !this.state.headers[targetName].isChecked;
     headers[targetName].isChecked = isChecked;
     if (targetName === 'Source') headers.URL.isChecked = isChecked;
-    if (targetName === 'Nucleotide Change')
+    if (targetName === 'Nucleotide Change') {
       headers['Other Mappings'].isChecked = isChecked;
+      headers['Submitter Comment'].isChecked = isChecked;
+    }
     this.setState({ headers });
   };
 

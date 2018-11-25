@@ -19,7 +19,7 @@ const geneHeaders = {
     isChecked: 1
   },
   Alias: { isFetched: 0, isHeader: 1, isSortable: 1, isChecked: 1 },
-  Transcripts: { isFetched: 0, isHeader: 1, isSortable: 1, isChecked: 0 },
+  Transcripts: { isFetched: 0, isHeader: 0, isSortable: 1, isChecked: 0 },
   Region: { isFetched: 0, isHeader: 1, isSortable: 1, isChecked: 1 },
   'Reported Classification': {
     isFetched: 0,
@@ -49,9 +49,9 @@ const geneHeaders = {
   URL: { isFetched: 0, isHeader: 0, isSortable: 1, isChecked: 1 },
   'Submitter Comment': {
     isFetched: 0,
-    isHeader: 1,
+    isHeader: 0,
     isSortable: 1,
-    isChecked: 0
+    isChecked: 1
   },
   Assembly: { isFetched: 0, isHeader: 1, isSortable: 1, isChecked: 0 },
   Chr: { isFetched: 0, isHeader: 1, isSortable: 1, isChecked: 0 },
