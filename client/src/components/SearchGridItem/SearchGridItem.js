@@ -113,7 +113,7 @@ SearchGridItem.propTypes = {
   isCondensed: PropTypes.bool.isRequired,
   isNucleotideChange: PropTypes.bool.isRequired,
   isSource: PropTypes.bool.isRequired,
-  openGeneIds: PropTypes.string.isRequired,
+  openGeneIds: PropTypes.object.isRequired,
   entryValue: PropTypes.string.isRequired,
   result: PropTypes.object.isRequired,
   click: PropTypes.func
