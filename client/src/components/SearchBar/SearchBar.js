@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import styles from './SearchBar.module.scss';
+import Input from '../UI/Input/Input';
 import Button from '../UI/Button/Button';
 
 const SearchBar = props => {
@@ -24,13 +25,16 @@ const SearchBar = props => {
     <div className={styles.SearchBar}>
       <form onSubmit={props.handleSearch}>
         <div className={styles.InputContainer}>
-          <input
+          <Input
+            noError
+            required
+            medium
             type="text"
             name="gene"
             placeholder="Gene Name"
             value={props.gene}
             list="suggestions"
-            onChange={props.handleInputChange}
+            change={props.handleInputChange}
           />
           <datalist id="suggestions">{options}</datalist>
           {loader}

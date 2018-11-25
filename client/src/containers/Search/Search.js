@@ -239,9 +239,22 @@ class Search extends Component {
   };
 
   renderHeaderCheckboxes = () => {
-    const checkboxes = [];
-    checkboxes.push(
+    const misc = [];
+    misc.push(
       <label key={-1}>
+        <input
+          name="isCondensed"
+          type="checkbox"
+          checked={this.state.isCondensed}
+          onChange={this.handleInputChange}
+        />
+        <span />
+        Condensed
+      </label>
+    );
+
+    misc.push(
+      <label key={-2}>
         <input
           name="Select All"
           type="checkbox"
@@ -252,9 +265,11 @@ class Search extends Component {
         Select All
       </label>
     );
+
+    const headerCheckboxes = [];
     Object.keys(this.state.headers).forEach((key, index) => {
       if (!this.state.headers[key].isHeader) return;
-      checkboxes.push(
+      headerCheckboxes.push(
         <label key={index}>
           <input
             name={key}
@@ -267,7 +282,13 @@ class Search extends Component {
         </label>
       );
     });
-    return <div className={styles.HeaderCheckboxes}>{checkboxes}</div>;
+
+    return (
+      <div className={styles.Options}>
+        <div className={styles.Misc}>{misc}</div>
+        <div className={styles.HeaderCheckboxes}>{headerCheckboxes}</div>
+      </div>
+    );
   };
 
   render() {
@@ -309,7 +330,7 @@ class Search extends Component {
                 <div className="material-icons">arrow_back</div>
               </Button>
             </div>
-            <h4>Categories</h4>
+            <h4>Options</h4>
           </div>
           {this.renderHeaderCheckboxes()}
         </div>

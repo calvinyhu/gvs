@@ -57,11 +57,24 @@
   }
 }
 
-.HeaderCheckboxes {
-  width: auto;
+.Options {
   display: flex;
-  flex-flow: column;
+  flex-direction: column;
   overflow: auto;
+  height: 100%;
+
+  .Misc {
+    width: auto;
+    display: flex;
+    flex-direction: column;
+    margin-bottom: $margin * 2;
+  }
+
+  .HeaderCheckboxes {
+    width: auto;
+    display: flex;
+    flex-direction: column;
+  }
 
   label {
     display: flex;

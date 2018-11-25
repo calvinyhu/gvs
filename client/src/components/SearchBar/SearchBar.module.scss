@@ -4,11 +4,11 @@
 
 .SearchBar {
   width: 100%;
-  max-width: 30rem;
   position: relative;
 
   form {
     display: flex;
+    align-items: flex-end;
     width: 100%;
   }
 }
@@ -16,28 +16,6 @@
 .InputContainer {
   position: relative;
   width: 100%;
-
-  input {
-    width: 100%;
-    appearance: none;
-    background: $md-white;
-    color: $md-black;
-    border: $border-input;
-    border-radius: $border-radius-input;
-    padding: $padding / 2 $padding / 1.5;
-    transition: $transition-duration1;
-    position: relative;
-
-    &:hover {
-      box-shadow: $box-shadow;
-    }
-
-    &:focus {
-      outline: none;
-      border-color: $main-theme;
-      box-shadow: $box-shadow;
-    }
-  }
 }
 
 .LoaderContainer {
@@ -59,8 +37,7 @@
 }
 
 .SearchButtonContainer {
-  width: 25%;
-  min-width: 2.5rem;
-  min-height: 2.5rem;
-  margin-left: $margin;
+  width: 5rem;
+  height: 3rem;
+  margin-left: 1rem;
 }

@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 
 import styles from './ToolBar.module.scss';
 import SearchBar from '../SearchBar/SearchBar';
+import Input from '../UI/Input/Input';
 import Button from '../UI/Button/Button';
 
 const toolBar = props => {
@@ -21,18 +22,6 @@ const toolBar = props => {
           handleInputChange={props.handleInputChange}
           handleSearch={props.handleSearch}
         />
-      </div>
-      <div className={styles.DisplayOption}>
-        <label>
-          <input
-            name="isCondensed"
-            type="checkbox"
-            checked={props.isCondensed}
-            onChange={props.handleInputChange}
-          />
-          <span />
-          Condensed
-        </label>
       </div>
     </div>
   );
