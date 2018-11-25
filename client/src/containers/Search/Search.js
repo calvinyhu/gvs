@@ -241,27 +241,29 @@ class Search extends Component {
   renderHeaderCheckboxes = () => {
     const misc = [];
     misc.push(
-      <label key={-1}>
+      <label className={styles.CheckboxContainer} key={'isCondensed'}>
         <input
+          className={styles.Checkbox}
           name="isCondensed"
           type="checkbox"
           checked={this.state.isCondensed}
           onChange={this.handleInputChange}
         />
-        <span />
+        <span className={styles.Check} />
         Condensed
       </label>
     );
 
     misc.push(
-      <label key={-2}>
+      <label className={styles.CheckboxContainer} key={'Select All'}>
         <input
+          className={styles.Checkbox}
           name="Select All"
           type="checkbox"
           checked={this.state.isSelectAll}
           onChange={this.handleInputChange}
         />
-        <span />
+        <span className={styles.Check} />
         Select All
       </label>
     );
@@ -270,14 +272,15 @@ class Search extends Component {
     Object.keys(this.state.headers).forEach((key, index) => {
       if (!this.state.headers[key].isHeader) return;
       headerCheckboxes.push(
-        <label key={index}>
+        <label className={styles.CheckboxContainer} key={index}>
           <input
+            className={styles.Checkbox}
             name={key}
             type="checkbox"
             checked={this.state.headers[key].isChecked}
             onChange={this.handleInputChange}
           />
-          <span />
+          <span className={styles.Check} />
           {key}
         </label>
       );
