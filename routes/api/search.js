@@ -6,13 +6,11 @@ const Gene = require('../../models/Gene/Gene');
 // POST /
 // Retrieve gene data from given gene name
 router.post('/', (req, res) => {
-  Gene.find({ Gene: req.body.gene.toUpperCase() }, req.body.desiredHeaders)
-    .then(genes => {
-      res.json({ genes });
-    })
-    .catch(error => {
-      res.status(400).json({ error });
-    });
+  const gene = req.body.gene.toUpperCase();
+  Gene.find({ Gene: gene }, req.body.desiredHeaders, (error, genes) => {
+    if (error) res.status(400).json({ error });
+    res.json({ genes });
+  });
 });
 
 // POST /suggestion
