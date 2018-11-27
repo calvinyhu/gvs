@@ -183,9 +183,6 @@ class Search extends Component {
     if (openGeneIds[geneId]) openGeneIds[geneId] = 0;
     else openGeneIds[geneId] = 1;
     this.setState({ openGeneIds });
-    // this.setState(prevState => {
-    //   return { openGeneIds: prevState.openGeneIds === geneId ? '' : geneId };
-    // });
   };
 
   renderGrid = () => {
