@@ -2,11 +2,26 @@ import axios from 'axios';
 
 import * as types from './types';
 
-export const search = (gene, desiredHeaders) => dispatch => {
+export const search = (gene, headers) => dispatch => {
+  const desiredHeaders = {};
+  Object.entries(headers).forEach(entry => {
+    if (entry[1].isChecked) {
+      headers[entry[0]].isFetched = 1;
+      desiredHeaders[entry[0]] = 1;
+    } else headers[entry[0]].isFetched = 0;
+  });
+  const numCols = Object.values(headers).filter(
+    header => header.isFetched && header.isHeader
+  ).length;
+
   dispatch(searchStart());
   axios
     .post('/api/search', { gene, desiredHeaders })
-    .then(response => dispatch(searchSuccess(response.data.genes)))
+    .then(response =>
+      dispatch(
+        searchSuccess(response.data.genes, headers, desiredHeaders, numCols)
+      )
+    )
     .catch(error => dispatch(searchFail(error)));
 };
 
@@ -19,11 +34,19 @@ export const searchStart = () => ({
   }
 });
 
-export const searchSuccess = searchResults => ({
+export const searchSuccess = (
+  searchResults,
+  headers,
+  desiredHeaders,
+  numCols
+) => ({
   type: types.GET_SEARCH_RESULTS_SUCCESS,
   payload: {
     isLoadingSearchResults: false,
-    searchResults
+    searchResults,
+    headers,
+    desiredHeaders,
+    numCols
   }
 });
 
@@ -68,17 +91,48 @@ export const suggestFail = error => ({
   }
 });
 
-export const sortSearchResults = searchResults => ({
-  type: types.SORT_SEARCH_RESULTS,
-  payload: {
-    searchResults
-  }
-});
+export const sortSearchResults = (searchResults, sortedHeader) => {
+  const sortedSearchResults = [];
+  searchResults.forEach(result => sortedSearchResults.push({ ...result }));
+  sortedSearchResults.sort(compare(sortedHeader));
+
+  return {
+    type: types.SORT_SEARCH_RESULTS,
+    payload: {
+      searchResults: sortedSearchResults
+    }
+  };
+};
+
+const compare = sortedHeader => {
+  const header = sortedHeader.name;
+  return (a, b) => {
+    const left = a[header] ? a[header] : '-';
+    const right = b[header] ? b[header] : '-';
+    if (left > right) return sortedHeader.isAscending ? 1 : -1;
+    if (left < right) return sortedHeader.isAscending ? -1 : 1;
+    return 0;
+  };
+};
 
 export const resetSuggestions = () => ({
   type: types.RESET_SUGGESTIONS,
   payload: {
     isLoadingSuggestions: false,
     suggestions: []
+  }
+});
+
+export const setHeaders = headers => ({
+  type: types.SET_HEADERS,
+  payload: {
+    headers
+  }
+});
+
+export const toggleCondensed = isCondensed => ({
+  type: types.TOGGLE_CONDENSED,
+  payload: {
+    isCondensed: !isCondensed
   }
 });

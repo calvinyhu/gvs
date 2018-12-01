@@ -1,5 +1,4 @@
 @import './src/assets/scss/_variables.scss';
-@import './src/assets/scss/_classes.scss';
 
 .Search {
   width: 100%;
@@ -21,16 +20,6 @@
   margin: $margin;
   margin-bottom: 0;
   padding-bottom: 20rem;
-}
-
-.LoaderContainer {
-  min-width: 4rem;
-  width: 4rem;
-  min-height: 4rem;
-  height: 4rem;
-  overflow: hidden;
-  justify-self: center;
-  align-self: center;
 }
 
 .DrawerContents {

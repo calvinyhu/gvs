@@ -1,5 +1,6 @@
 @import './src/assets/scss/_variables.scss';
 @import './src/assets/scss/_mixins.scss';
+@import './src/assets/scss/_classes.scss';
 
 @include fade-in;
 
@@ -9,4 +10,14 @@
   grid-auto-rows: auto;
   opacity: 0;
   animation: fadeIn $transition-duration1 linear 0s forwards;
+}
+
+.LoaderContainer {
+  min-width: 4rem;
+  width: 4rem;
+  min-height: 4rem;
+  height: 4rem;
+  overflow: hidden;
+  justify-self: center;
+  align-self: center;
 }

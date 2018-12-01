@@ -1,39 +1,82 @@
-import React from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 
 import styles from './ToolBar.module.scss';
+import * as searchActions from '../../store/actions/searchActions';
 import SearchBar from '../SearchBar/SearchBar';
 import Button from '../UI/Button/Button';
 
-const toolBar = props => {
-  return (
-    <div className={styles.ToolBar}>
-      <div className={styles.DrawerToggleContainer}>
-        <Button clear circle click={props.handleToggleDrawer}>
-          <div className="material-icons">menu</div>
-        </Button>
-      </div>
-      <div className={styles.SearchBarContainer}>
-        <SearchBar
-          isLoadingSuggestions={props.isLoadingSuggestions}
-          gene={props.gene}
-          suggestions={props.suggestions}
-          handleInputChange={props.handleInputChange}
-          handleSearch={props.handleSearch}
-        />
-      </div>
-    </div>
-  );
+const mapStateToProps = state => ({
+  isLoadingSuggestions: state.search.isLoadingSuggestions,
+  headers: state.search.headers,
+  suggestions: state.search.suggestions
+});
+
+const mapDispatchToProps = {
+  onSearch: searchActions.search,
+  onSuggest: searchActions.suggest,
+  onResetSuggestions: searchActions.resetSuggestions
 };
 
-toolBar.propTypes = {
-  isLoadingSuggestions: PropTypes.bool.isRequired,
-  isCondensed: PropTypes.bool.isRequired,
-  gene: PropTypes.string.isRequired,
-  suggestions: PropTypes.array.isRequired,
-  handleInputChange: PropTypes.func.isRequired,
-  handleSearch: PropTypes.func.isRequired,
-  handleToggleDrawer: PropTypes.func.isRequired
-};
+class ToolBar extends Component {
+  static propTypes = {
+    isLoadingSuggestions: PropTypes.bool.isRequired,
+    suggestions: PropTypes.array.isRequired,
+    headers: PropTypes.object.isRequired,
+    handleToggleDrawer: PropTypes.func.isRequired,
+    onResetSuggestions: PropTypes.func.isRequired,
+    onSuggest: PropTypes.func.isRequired,
+    onSearch: PropTypes.func.isRequired
+  };
 
-export default toolBar;
+  state = {
+    gene: ''
+  };
+
+  handleInputChange = event => {
+    const gene = event.target.value;
+    this.setState({ gene });
+    if (!gene) this.props.onResetSuggestions();
+    else this.props.onSuggest(gene);
+  };
+
+  handleSearch = event => {
+    if (event) event.preventDefault();
+    if (!this.state.gene) return;
+
+    // Copy headers
+    const headers = {};
+    Object.keys(this.props.headers).forEach(key => {
+      headers[key] = { ...this.props.headers[key] };
+    });
+
+    this.props.onSearch(this.state.gene, headers);
+  };
+
+  render() {
+    return (
+      <div className={styles.ToolBar}>
+        <div className={styles.DrawerToggleContainer}>
+          <Button clear circle click={this.props.handleToggleDrawer}>
+            <div className="material-icons">menu</div>
+          </Button>
+        </div>
+        <div className={styles.SearchBarContainer}>
+          <SearchBar
+            isLoadingSuggestions={this.props.isLoadingSuggestions}
+            gene={this.state.gene}
+            suggestions={this.props.suggestions}
+            handleInputChange={this.handleInputChange}
+            handleSearch={this.handleSearch}
+          />
+        </div>
+      </div>
+    );
+  }
+}
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(ToolBar);
