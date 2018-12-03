@@ -1,0 +1,23 @@
+@import './src/assets/scss/_variables.scss';
+
+.Options {
+  display: flex;
+  flex-direction: column;
+  overflow: auto;
+  height: 100%;
+
+  .Misc {
+    width: auto;
+    min-height: 4.5rem;
+    display: flex;
+    flex-direction: column;
+    border-bottom: 1px solid #ccc;
+    margin-bottom: $margin;
+  }
+
+  .HeaderCheckboxes {
+    width: auto;
+    display: flex;
+    flex-direction: column;
+  }
+}

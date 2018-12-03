@@ -1,0 +1,28 @@
+@import './src/assets/scss/_variables.scss';
+
+.DrawerContents {
+  display: flex;
+  flex-direction: column;
+  background: $md-white;
+  position: relative;
+  padding: $padding;
+  height: 100%;
+}
+
+.DrawerHeader {
+  display: flex;
+  width: 100%;
+  min-height: 2.5rem;
+  align-items: center;
+  margin-bottom: $margin;
+
+  .DrawerCloseContainer {
+    width: 2.5rem;
+    height: 2.5rem;
+  }
+
+  h4 {
+    margin: 0;
+    margin-left: $margin;
+  }
+}

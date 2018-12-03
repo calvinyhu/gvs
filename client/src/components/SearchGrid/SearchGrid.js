@@ -125,24 +125,27 @@ class SearchGrid extends Component {
   };
 
   render() {
+    let grid = null;
     if (this.props.isLoadingSearchResults) {
-      return (
+      grid = (
         <div className={styles.LoaderContainer}>
           <div className={styles.Loader} />
         </div>
       );
+    } else {
+      grid = (
+        <div
+          style={{
+            gridTemplateColumns: `repeat(${this.props.numCols}, 1fr)`
+          }}
+          className={styles.SearchGrid}
+        >
+          {this.renderGrid()}
+        </div>
+      );
     }
 
-    return (
-      <div
-        style={{
-          gridTemplateColumns: `repeat(${this.props.numCols}, 1fr)`
-        }}
-        className={styles.SearchGrid}
-      >
-        {this.renderGrid()}
-      </div>
-    );
+    return <div className={styles.SearchGridContainer}>{grid}</div>;
   }
 }
 
