@@ -44,14 +44,7 @@ class ToolBar extends Component {
   handleSearch = event => {
     if (event) event.preventDefault();
     if (!this.state.gene) return;
-
-    // Copy headers
-    const headers = {};
-    Object.keys(this.props.headers).forEach(key => {
-      headers[key] = { ...this.props.headers[key] };
-    });
-
-    this.props.onSearch(this.state.gene, headers);
+    this.props.onSearch(this.state.gene, this.props.headers);
   };
 
   render() {

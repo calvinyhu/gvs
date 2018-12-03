@@ -3,14 +3,21 @@ import axios from 'axios';
 import * as types from './types';
 
 export const search = (gene, headers) => dispatch => {
-  const desiredHeaders = {};
-  Object.entries(headers).forEach(entry => {
-    if (entry[1].isChecked) {
-      headers[entry[0]].isFetched = 1;
-      desiredHeaders[entry[0]] = 1;
-    } else headers[entry[0]].isFetched = 0;
+  // Copy headers
+  const newHeaders = {};
+  Object.keys(headers).forEach(key => {
+    newHeaders[key] = { ...headers[key] };
   });
-  const numCols = Object.values(headers).filter(
+
+  // Change the new headers and create desired headers for network request
+  const desiredHeaders = {};
+  Object.entries(newHeaders).forEach(entry => {
+    if (entry[1].isChecked) {
+      newHeaders[entry[0]].isFetched = 1;
+      desiredHeaders[entry[0]] = 1;
+    } else newHeaders[entry[0]].isFetched = 0;
+  });
+  const numCols = Object.values(newHeaders).filter(
     header => header.isFetched && header.isHeader
   ).length;
 
@@ -19,7 +26,7 @@ export const search = (gene, headers) => dispatch => {
     .post('/api/search', { gene, desiredHeaders })
     .then(response =>
       dispatch(
-        searchSuccess(response.data.genes, headers, desiredHeaders, numCols)
+        searchSuccess(response.data.genes, newHeaders, desiredHeaders, numCols)
       )
     )
     .catch(error => dispatch(searchFail(error)));
