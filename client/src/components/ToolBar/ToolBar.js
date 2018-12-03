@@ -55,15 +55,13 @@ class ToolBar extends Component {
             <div className="material-icons">menu</div>
           </Button>
         </div>
-        <div className={styles.SearchBarContainer}>
-          <SearchBar
-            isLoadingSuggestions={this.props.isLoadingSuggestions}
-            gene={this.state.gene}
-            suggestions={this.props.suggestions}
-            handleInputChange={this.handleInputChange}
-            handleSearch={this.handleSearch}
-          />
-        </div>
+        <SearchBar
+          isLoadingSuggestions={this.props.isLoadingSuggestions}
+          gene={this.state.gene}
+          suggestions={this.props.suggestions}
+          handleInputChange={this.handleInputChange}
+          handleSearch={this.handleSearch}
+        />
       </div>
     );
   }

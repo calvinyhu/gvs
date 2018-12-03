@@ -22,34 +22,36 @@ const SearchBar = props => {
   }
 
   return (
-    <div className={styles.SearchBar}>
-      <form onSubmit={props.handleSearch}>
-        <div className={styles.InputContainer}>
-          <Input
-            noError
-            required
-            medium
-            type="text"
-            name="gene"
-            placeholder="Gene Name"
-            value={props.gene}
-            list="suggestions"
-            change={props.handleInputChange}
-          />
-          <datalist id="suggestions">{options}</datalist>
-          {loader}
-        </div>
-        <div className={styles.SearchButtonContainer}>
-          <Button
-            disabled={!props.gene}
-            main
-            name="search"
-            click={props.handleSearch}
-          >
-            <div className="material-icons">search</div>
-          </Button>
-        </div>
-      </form>
+    <div className={styles.SearchBarContainer}>
+      <div className={styles.SearchBar}>
+        <form onSubmit={props.handleSearch}>
+          <div className={styles.InputContainer}>
+            <Input
+              noError
+              required
+              medium
+              type="text"
+              name="gene"
+              placeholder="Gene Name"
+              value={props.gene}
+              list="suggestions"
+              change={props.handleInputChange}
+            />
+            <datalist id="suggestions">{options}</datalist>
+            {loader}
+          </div>
+          <div className={styles.SearchButtonContainer}>
+            <Button
+              disabled={!props.gene}
+              main
+              name="search"
+              click={props.handleSearch}
+            >
+              <div className="material-icons">search</div>
+            </Button>
+          </div>
+        </form>
+      </div>
     </div>
   );
 };

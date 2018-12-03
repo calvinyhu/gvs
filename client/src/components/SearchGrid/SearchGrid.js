@@ -63,12 +63,11 @@ class SearchGrid extends Component {
 
   handleShowVariants = geneId => {
     const openGeneIds = { ...this.state.openGeneIds };
-    if (openGeneIds[geneId]) openGeneIds[geneId] = 0;
-    else openGeneIds[geneId] = 1;
+    openGeneIds[geneId] = openGeneIds[geneId] ? 0 : 1;
     this.setState({ openGeneIds });
   };
 
-  renderGrid = () => {
+  renderGridItems = () => {
     if (this.props.searchResults.length === 0) return [];
     const grid = [];
     this.renderHeaders(grid);
@@ -78,49 +77,44 @@ class SearchGrid extends Component {
 
   renderHeaders = grid => {
     Object.entries(this.props.headers).forEach((header, index) => {
-      if (header[1].isFetched && header[1].isHeader) {
-        grid.push(
-          <SearchGridHeader
-            key={index}
-            isSortable={this.props.headers[header[0]].isSortable}
-            isSorted={this.state.sortedHeader.name === header[0]}
-            isAscending={this.state.sortedHeader.isAscending}
-            click={this.getSortHandler(header[0])}
-          >
-            {header[0]}
-          </SearchGridHeader>
-        );
-      }
+      if (!(header[1].isFetched && header[1].isHeader)) return;
+      grid.push(
+        <SearchGridHeader
+          key={index}
+          isSortable={this.props.headers[header[0]].isSortable}
+          isSorted={this.state.sortedHeader.name === header[0]}
+          isAscending={this.state.sortedHeader.isAscending}
+          click={this.getSortHandler(header[0])}
+        >
+          {header[0]}
+        </SearchGridHeader>
+      );
     });
   };
 
   renderSearchResults = grid => {
+    let isDarkRow = false;
     this.props.searchResults.forEach((result, index1) => {
       Object.keys(this.props.desiredHeaders).forEach((key, index2) => {
-        // Skip these since they are not headers and are part of other fields
         if (!this.props.headers[key].isHeader) return;
 
-        const isNucleotideChange = key === 'Nucleotide Change';
-        const isSource = key === 'Source';
-        let click = isNucleotideChange
-          ? this.getShowVariantsHandler(result._id)
-          : null;
+        let click = null;
+        if (key === 'Nucleotide Change')
+          click = this.getShowVariantsHandler(result._id);
 
-        // Push the same number of items per row as there are number of headers
         grid.push(
           <SearchGridItem
             key={index1 + ' ' + index2}
-            isDarkRow={index1 % 2 === 0}
+            type={key}
+            isDarkRow={isDarkRow}
             isCondensed={this.props.isCondensed}
-            isNucleotideChange={result[key] ? isNucleotideChange : false}
-            isSource={result[key] ? isSource : false}
-            openGeneIds={result[key] ? this.state.openGeneIds : {}}
-            entryValue={result[key] ? String(result[key]) : ''}
-            result={result[key] ? result : {}}
-            click={result[key] ? click : null}
+            openGeneIds={this.state.openGeneIds}
+            result={result}
+            click={click}
           />
         );
       });
+      isDarkRow = !isDarkRow;
     });
   };
 
@@ -133,14 +127,12 @@ class SearchGrid extends Component {
         </div>
       );
     } else {
+      const numCols = this.props.numCols;
+      const style = { gridTemplateColumns: `repeat(${numCols}, 1fr)` };
+      const gridItems = this.renderGridItems();
       grid = (
-        <div
-          style={{
-            gridTemplateColumns: `repeat(${this.props.numCols}, 1fr)`
-          }}
-          className={styles.SearchGrid}
-        >
-          {this.renderGrid()}
+        <div style={style} className={styles.SearchGrid}>
+          {gridItems}
         </div>
       );
     }
